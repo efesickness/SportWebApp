@@ -83,6 +83,7 @@ namespace SporWebDeneme1.Areas.Admin.Controllers
                 RecentRegistrations = _context.Registrations
                                             .Include(r => r.ApplicationUser)
                                             .Include(c=>c.Course)
+                                            .ThenInclude(b => b.Branch)
                                             .Include(r => r.CourseSession)
                                             .ThenInclude(cs => cs.Course)
                                             .OrderByDescending(r => r.RegistrationDate)

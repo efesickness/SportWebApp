@@ -13,102 +13,119 @@
 	<li>Toplam Gelir: @Model.TotalRevenue.ToString("c")</li>
 </ul>
 
-<h3 class="display-4">En Popüler Kurslar</h3>
-<table class="table lead mb-5 table-striped table-hover table-bordered">
-	<thead class="table-dark">
-		<tr>
-			<th>Kurs Adı</th>
-			<th>Kayıt Sayısı</th>
-		</tr>
-	</thead>
-	<tbody>
-		@if (Model is not null && Model.TotalCourses is not 0)
-		{
-			@foreach (var course in Model.TopCourses)
+@if (Model.TotalCourses == 0)
+{
+	<div class="alert alert-warning">Henüz kurs eklenmemiş.</div>
+}
+else
+{
+
+	<h3 class="display-4">En Popüler Kurslar</h3>
+	<table class="table lead mb-5 table-striped table-hover table-bordered">
+		<thead class="table-dark">
+			<tr>
+				<th>Kurs Adı</th>
+				<th>Kayıt Sayısı</th>
+			</tr>
+		</thead>
+		<tbody>
+			@if (Model is not null && Model.TotalCourses is not 0)
 			{
-				<tr>
-					<td>@course.CourseTitle</td>
-					<td>@course.RegistrationCount</td>
-				</tr>
+				@foreach (var course in Model.TopCourses)
+				{
+					<tr>
+						<td>@course.CourseTitle</td>
+						<td>@course.RegistrationCount</td>
+					</tr>
+				}
 			}
-		}
-	</tbody>
-</table>
+		</tbody>
+	</table>
 
-<h3 class="display-4 mt-5">Son Kurs Kayıtları</h3>
-<table class="table lead table-striped table-hover table-bordered">
-	<thead class="table-dark">
-		<tr>
-			<th>Öğrenci</th>
-			<th>Kurs</th>
-			<th>Tarih</th>
-			<th>Fiyat</th>
-		</tr>
-	</thead>
-	<tbody>
-		@if (Model is not null && Model.RecentRegistrations.Count>0)
-		{
-
-			@foreach (var reg in Model.RecentRegistrations)
+	<h3 class="display-4 mt-5">Son Kurs Kayıtları</h3>
+	<table class="table lead table-striped table-hover table-bordered">
+		<thead class="table-dark">
+			<tr>
+				<th>Öğrenci</th>
+				<th>Kurs</th>
+				<th>Branş</th>
+				<th>Tarih</th>
+				@* 			<th>Fiyat</th> *@
+			</tr>
+		</thead>
+		<tbody>
+			@if (Model is not null && Model.RecentRegistrations.Count > 0)
 			{
-				<tr>
-					<td>@reg.ApplicationUser.Name @reg.ApplicationUser.Surname</td>
-					<td>@reg?.Course?.Title</td>
-					<td>@reg?.RegistrationDate.ToShortDateString()</td>
-					<td>
+
+				@foreach (var reg in Model.RecentRegistrations)
+				{
+					<tr>
+						<td>@reg.ApplicationUser.Name @reg.ApplicationUser.Surname</td>
+						<td>@reg?.Course?.Title</td>
+						<td>@reg?.Course?.Branch?.Name</td>
+						<td>@reg?.RegistrationDate.ToShortDateString()</td>
+						@* 					<td>
 						@(Model.Payments.Where(x => x.SubscriptionId == Model
 										.StudentSubscriptions
 										.Where(x => x.RegistrationId == reg?.RegistrationId)
-										.Select(x => x.SubscriptionId).Max()).Select(x => x.Amount).First().ToString("c"))
-			</td>
-		</tr>
+										.Select(x => x.SubscriptionId).Max()).Select(x => x.Amount).First().ToString("c") ?? "Ödeme Bulunamadı")
+			</td> *@
+					</tr>
 				}
-		}
-	</tbody>
-</table>
+			}
+		</tbody>
+	</table>
+}
+@if (Model.TotalStudents == 0)
+{
+	<div class="alert alert-warning">Henüz öğrenci kaydı yapılmamış.</div>
+}
+else
+{
 
-<h3 class="display-4 mt-5">Son Kullanıcı Kayıtları</h3>
-<table class="table lead table-striped table-hover table-bordered">
-	<thead class="table-dark">
-		<tr>
-			<th>Ad</th>
-			<th>Soyad</th>
-			<th>Email</th>
-			<th>Kayıt Tarihi</th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var user in Model.RecentRegistrants)
-		{
+	<h3 class="display-4 mt-5">Son Kullanıcı Kayıtları</h3>
+	<table class="table lead table-striped table-hover table-bordered">
+		<thead class="table-dark">
 			<tr>
-				<td>@user.Name</td>
-				<td>@user.Surname</td>
-				<td>@user.Email</td>
-				<td>@user.RegistrationDate</td>
+				<th>Ad</th>
+				<th>Soyad</th>
+				<th>Email</th>
+				<th>Kayıt Tarihi</th>
 			</tr>
-		}
-	</tbody>
-</table>
+		</thead>
+		<tbody>
+			@foreach (var user in Model.RecentRegistrants)
+			{
+				<tr>
+					<td>@user.Name</td>
+					<td>@user.Surname</td>
+					<td>@user.Email</td>
+					<td>@user.RegistrationDate</td>
+				</tr>
+			}
+		</tbody>
+	</table>
 
-<h3 class="display-4 mt-5">Son Kullanıcı Girişleri</h3>
-<table class="table lead table-striped table-hover table-bordered">
-	<thead class="table-dark">
-		<tr>
-			<th>Ad</th>
-			<th>Soyad</th>
-			<th>Email</th>
-			<th>Son Giriş</th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var user in Model.RecentLogins)
-		{
+	<h3 class="display-4 mt-5">Son Kullanıcı Girişleri</h3>
+	<table class="table lead table-striped table-hover table-bordered">
+		<thead class="table-dark">
 			<tr>
-				<td>@user.Name</td>
-				<td>@user.Surname</td>
-				<td>@user.Email</td>
-				<td>@(user.LastLoginDate)</td>
+				<th>Ad</th>
+				<th>Soyad</th>
+				<th>Email</th>
+				<th>Son Giriş</th>
 			</tr>
-		}
-	</tbody>
-</table>
+		</thead>
+		<tbody>
+			@foreach (var user in Model.RecentLogins)
+			{
+				<tr>
+					<td>@user.Name</td>
+					<td>@user.Surname</td>
+					<td>@user.Email</td>
+					<td>@(user.LastLoginDate)</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}

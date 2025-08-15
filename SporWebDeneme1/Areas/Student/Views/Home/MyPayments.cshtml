@@ -1,0 +1,54 @@
+﻿@model List<Payment>
+@{
+	ViewData["Title"] = "My Payments";
+}
+<div class="display-3 mb-3 text-success">
+	My Payments
+</div>
+@foreach (var course in Model.Select(p => p.StudentSubscription.Registration.Course).Distinct())
+{
+	<div class="lead mb-5">
+
+		<div class="display-6">
+			<strong>Kurs:</strong> @course.Branch.Name
+		</div>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Payment ID</th>
+					<th>Tutar</th>
+					<th>Ödeme Tarihi</th>
+					<th>Durum</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var payment in Model.Where(x => x.StudentSubscription.Registration.CourseId == course.CourseId).ToList())
+				{
+					<tr>
+						<td>@payment.PaymentId</td>
+						<td>@payment.Amount.ToString("C")</td>
+						<td>@payment.PaymentDate.ToString("g")</td>
+						<td>@(payment.Status)</td>
+					</tr>
+				}
+			</tbody>
+
+		</table>
+		<!--Bir Sonraki Ödeme Tarihi-->
+		@if (Model.Count > 0)
+		{
+			<div class="alert alert-dark">Bir Sonraki Ödeme Tarihi: @Model.Where(p => p.StudentSubscription.Registration.CourseId == course.CourseId).Max(p => p.PaymentDate).AddMonths(1).ToString("d")</div>
+		}
+		<hr />
+	</div>
+}
+
+
+@if (Model.Count == 0)
+{
+	<p>No payments found.</p>
+}
+else
+{
+	<p>Ödeme Toplamı: @Model.Sum(p => p.Amount).ToString("C")</p>
+}

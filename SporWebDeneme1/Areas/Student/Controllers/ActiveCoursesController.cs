@@ -74,7 +74,6 @@ namespace SporWebDeneme1.Areas.Student.Controllers
 
             var payment = new Payment
             {
-                //Amount = course.Price,
                 PaymentDate = DateTime.Now,
                 UserId = userId,
                 Method = PaymentMethod.EFT,

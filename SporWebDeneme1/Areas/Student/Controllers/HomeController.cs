@@ -28,7 +28,7 @@ namespace SporWebDeneme1.Areas.Student.Controllers
             var registrations = await _context.Registrations
                 .Where(r => r.UserId == userId)
                 .Include(c => c.Course)
-                .ThenInclude(b=>b.Branch)
+                .ThenInclude(b => b.Branch)
                 .Include(r => r.CourseSession)
                 .ThenInclude(cs => cs.Course)
                 .ToListAsync();
@@ -68,13 +68,26 @@ namespace SporWebDeneme1.Areas.Student.Controllers
                 instructor = $"{course.ApplicationUser.Name} {course.ApplicationUser.Surname}",
                 lastPayment = payment.PaymentDate,
                 nextPayment = payment.PaymentDate.AddMonths(1),
-                courseSession = course.CourseSessions.Where(x=>x.CourseSessionId==courseSessionId).Select(x => x.Title).FirstOrDefault(),
+                courseSession = course.CourseSessions.Where(x => x.CourseSessionId == courseSessionId).Select(x => x.Title).FirstOrDefault(),
                 lastPaymentAmount = payment.Amount,
             }
             ;
 
 
             return View(courseDetails);
+        }
+
+        public async Task<IActionResult> MyPayments()
+        {
+            var userId = _userManager.GetUserId(User);
+            var payments = await _context.Payments
+                .Where(p => p.UserId == userId)
+                .Include(p => p.StudentSubscription)
+                .ThenInclude(s => s.Registration)
+                .ThenInclude(r => r.Course)
+                .ThenInclude(b=>b.Branch)
+                .ToListAsync();
+            return View(payments);
         }
     }
 }

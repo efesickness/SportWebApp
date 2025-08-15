@@ -28,7 +28,7 @@ namespace SporWebDeneme1.Areas.Instructor.Controllers
             ViewData["ReturnUrl"] = returnUrl;
 
             var sessions = await _context.CourseSessions
-                .Where(x => x.CourseId == courseId && x.UserId == _userManager.GetUserId(User))
+                .Where(x => x.CourseId == courseId)
                 .Include(r => r.Course)
                 .Include(a => a.ApplicationUser)
                 .Include(cs => cs.Registrations)
@@ -272,7 +272,7 @@ namespace SporWebDeneme1.Areas.Instructor.Controllers
             };
             model.Payment = new Payment
             {
-                Status = PaymentStatus.Pending
+                Status = PaymentStatus.Paid
             };
 
 
@@ -295,34 +295,26 @@ namespace SporWebDeneme1.Areas.Instructor.Controllers
             _context.CourseSessions.Update(model.CourseSession);
             await _context.SaveChangesAsync();
 
+            var subscription = _context.StudentSubscriptions.FirstOrDefault(x => x.RegistrationId == registration.RegistrationId);
 
-            //kaldırılacak
-            var subscription = new StudentSubscription
-            {
-                UserId = model.SelectedUserId,
-                RegistrationId = registration.RegistrationId,
-                StartDate = model.Registration.RegistrationDate,
-                EndDate = model.Registration.RegistrationDate.AddMonths(1), // 1 month subscription
-                CreatedAt = DateTime.Now,
-                IsActive = true,
-            };
-            _context.StudentSubscriptions.Add(subscription);
             await _context.SaveChangesAsync();
 
+            var payment = _context.Payments
+                .Where(x => x.UserId == model.SelectedUserId && x.SubscriptionId == subscription.SubscriptionId)
+                .OrderByDescending(x => x.PaymentDate)
+                .FirstOrDefault();
 
-            var payment = new Payment
-            {
-                UserId = model.SelectedUserId,
-                Amount = model.Payment.Amount,
-                Currency = "TRY",
-                PaymentDate = DateTime.Now,
-                Status = model.Payment.Status,
-                Method = PaymentMethod.Other,
-                PaymentProvider = "Manual",
-                SubscriptionId = subscription.SubscriptionId
-            };
 
-            _context.Payments.Add(payment);
+            payment.UserId = model.SelectedUserId;
+            payment.Amount = 0;
+            payment.Currency = "TRY";
+            payment.PaymentDate = DateTime.Now;
+            payment.Status = PaymentStatus.Paid;
+            payment.Method = PaymentMethod.Other;
+            payment.PaymentProvider = "Manual";
+            payment.SubscriptionId = subscription.SubscriptionId;
+
+            _context.Payments.Update(payment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index), new { courseId = model.CourseSession.CourseId });
         }
