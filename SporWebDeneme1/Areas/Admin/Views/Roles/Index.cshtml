@@ -1,0 +1,63 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model List<IdentityRole>
+
+@{
+	ViewData["Title"] = "Roller";
+	var errorMessage = TempData["ErrorMessage"] as string;
+	var successMessage = TempData["SuccessMessage"] as string;
+}
+
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+	<i class="bi bi-info-circle me-2"></i>
+	Antrenörler için <strong>Instructor</strong> rolünü kullanmalısınız. Eğer yetkileri farklılaştırmak isterseniz,
+	<strong>Instructor</strong> rolüyle birlikte ek bir rol de atayabilirsiniz.
+	<br />
+	<i class="bi bi-info-circle me-2"></i>
+	Öğrenciler için <strong>Student</strong> rolünü kullanmalısınız.
+	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+	<div class="alert alert-danger">
+		@errorMessage
+	</div>
+}
+@if (!string.IsNullOrEmpty(successMessage))
+{
+	<div class="alert alert-success">
+		@successMessage
+	</div>
+}
+
+<a class="btn btn-secondary mb-5" asp-action="Index" asp-controller="PermissionsManage" asp-area="Admin">Yetkiler</a>
+<h2>@ViewData["Title"]</h2>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Rol Adı</th>
+			<th>Rol Açıklaması</th>
+			<th>İşlemler</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var role in Model)
+		{
+			<tr>
+				<td>@role.Name</td>
+				<td>@role.NormalizedName</td>
+				<td>
+					<a class="btn btn-primary" asp-action="Edit" asp-route-id="@role.Id">Düzenle</a>
+					<form class="d-inline" asp-action="Delete">
+						<input type="hidden" name="id" value="@role.Id" />
+						<button class="btn btn-danger" type="submit" onclick="return confirm('Bu kaydı silmek istediğinize emin misiniz?')">Sil</button>
+					</form>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+<div class="text-right">
+	<a class="btn btn-success" asp-action="Create">Yeni Rol Ekle</a>
+
+</div>

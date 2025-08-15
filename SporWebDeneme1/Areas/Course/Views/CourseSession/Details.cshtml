@@ -1,0 +1,91 @@
+﻿@model SporWebDeneme1.Entities.Models.CourseSession
+
+@{
+	ViewData["Title"] = "Course Session Details";
+}
+<div class="row">
+	<div class="col-md-12">
+		<h4 class="display-4">CourseSession</h4>
+		<hr />
+		<dl class="row">
+			<dt class="col-sm-2">
+				Kurs
+			</dt>
+			<dd class="col-sm-10">
+				@Model.Course.Title
+			</dd>
+			<dt class="col-sm-2">
+				Kurs Açıklama
+			</dt>
+			<dd class="col-sm-10">
+				@Model.Course.Description
+			</dd>
+			<dt class="col-sm-2">
+				Grup Adı
+			</dt>
+			<dd class="col-sm-10">
+				@Model.Title
+			</dd>
+			<dt class="col-sm-2">
+				Grup Açıklama
+			</dt>
+			<dd class="col-sm-10">
+				@Model.Description
+			</dd>
+			<dt class="col-sm-2">
+				Toplam Kapasite
+			</dt>
+			<dd class="col-sm-10">
+				@Model.Course.Capacity
+			</dd>
+			<dt class="col-sm-2">
+				Kalan Kapasite
+			</dt>
+			<dd class="col-sm-10">
+				@Model.AvailableCapacity
+			</dd>
+		</dl>
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Öğrenci Adı Soyadı</th>
+					<th>Öğrenci E-Posta</th>
+					<th>Yaş</th>
+					<th>#</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var reg in Model.Registrations)
+				{
+					<tr>
+						<td>@($"{reg.ApplicationUser.Name} {reg.ApplicationUser.Surname}")</td>
+						<td>@reg.ApplicationUser.Email</td>
+						<td>
+							@{
+								var today = DateOnly.FromDateTime(DateTime.Now);
+								var age = today.Year - reg.ApplicationUser.BirthDate.Year;
+							}
+							@age
+						</td>
+						<td>
+							<form asp-controller="CourseSession" asp-action="DeleteStudent" method="post">
+								<input type="hidden" name="registrationId" value="@reg.RegistrationId" />
+								<input type="hidden" name="courseSessionId" value="@Model.CourseSessionId" />
+								<button type="submit" class="btn btn-danger btn-sm"
+								onclick="return confirm('Bu öğrencinin kaydını silmek istiyor musunuz?')">
+									<i class="fa fa-remove"></i>
+								</button>
+							</form>
+					</tr>
+				}
+			</tbody>
+		</table>
+
+		<div>
+			<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+		</div>
+
+	</div>
+
+</div>

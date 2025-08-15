@@ -1,0 +1,40 @@
+﻿@using SporWebDeneme1.Entities.Models
+@model BranchAssignment
+
+@{
+	var instructors = ViewBag.Instructors as List<ApplicationUser>;
+	var branches = ViewBag.Branches as List<Branch>;
+}
+
+<div class="display-4">Branş Atamasını Düzenle</div>
+<div class="text-danger" asp-validation-summary="All"></div>
+
+<form method="post" asp-action="UpdateBranchAssignment">
+	<input type="hidden" asp-for="BranchAssignmentId" value="@Model.BranchAssignmentId" />
+	<div class="form-group">
+		<label for="branchId">Branş</label>
+		<select id="branchId" class="form-control" asp-for="BranchId">
+			<option value="@Model.BranchId" selected>
+				@Model.Branch.Name
+			</option>
+			@foreach (var branch in branches)
+			{
+				if (branch.BranchId != Model.BranchId)
+				{
+					<option value="@branch.BranchId">@branch.Name</option>
+				}
+			}
+		</select>
+	</div>
+
+	<div class="form-group mb-2">
+		<label for="instructorId">Öğretmen</label>
+		<select id="instructorId" asp-for="UserId" class="form-control">
+			<option value="@Model.UserId">
+				@($"{Model.ApplicationUser.Name} {Model.ApplicationUser.Surname}")
+			</option>
+		</select>
+	</div>
+	<button type="submit" class="btn btn-primary">Güncelle</button>
+	<a asp-action="BranchAssignments" class="btn btn-secondary">Geri Dön</a>
+</form>

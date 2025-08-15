@@ -1,0 +1,27 @@
+﻿@model List<SporWebDeneme1.Entities.Models.TrainingAttendance>;
+
+<form asp-action="TakeAttendance" method="post">
+	<table class="table table-hover lead">
+		<thead>
+			<tr>
+				<th>Katılımcı</th>
+				<th>Katıldı mı?</th>
+			</tr>
+		</thead>
+		<tbody>
+			@for (int i = 0; i < Model.Count; i++)
+			{
+				<input type="hidden" asp-for="@Model[i].UserId"/>
+				<input type="hidden" asp-for="@Model[i].TrainingSessionId" />
+				<tr>
+
+					<td>@($"{Model[i].ApplicationUser.Name} {Model[i].ApplicationUser.Surname}")</td>
+					<td>
+						<input type="checkbox" asp-for="@Model[i].IsPresent" class="form-check-input" />
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+	<button type="submit" class="btn btn-success">Kaydet</button>
+</form>

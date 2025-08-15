@@ -1,0 +1,19 @@
+﻿<div class="display-3">
+	Yeni Branş Oluştur
+</div>
+<form asp-area="Instructor" asp-controller="ManageBranches" asp-action="CreateBranch" method="post">
+	<div class="form-group">
+		<label for="branchName">Branş Adı</label>
+		<input type="text" class="form-control" id="branchName" name="branchName" required />
+	</div>
+	<div class=" form-group mb-3">
+		<label for="description">Branş Açıklaması</label>
+<textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+	</div>
+@* 	<div class="form-group">
+		<label for="ImageUrl">Branş Resim URL</label>
+		<input type="text" class="form-control" id="ImageUrl" name="ImageUrl" />
+	</div> *@
+	<button type="submit" class="btn btn-primary">Branş Oluştur</button>
+	<a asp-area="Instructor" asp-controller="ManageBranches" asp-action="Index" class="btn btn-secondary">Geri Dön</a>
+</form>

@@ -1,0 +1,93 @@
+﻿@using SporWebDeneme1.Entities.Models
+@{
+	var branches = ViewBag.Branches as List<Branch>;
+	var branchAssignments = ViewBag.BranchAssignments as List<BranchAssignment>;
+	var courses = ViewBag.Courses as List<Course>;
+	var errorMessage = TempData["ErrorMessage"] as string;
+	var successMessage = TempData["SuccessMessage"] as string;
+}
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+	<div class="alert alert-danger">@errorMessage</div>
+}
+@if (!string.IsNullOrEmpty(successMessage))
+{
+	<div class="alert alert-success">@successMessage</div>
+}
+
+<div class="display-2 mb-3">Branşlar</div>
+@if (branches.Count > 0)
+{
+
+	<div class="row">
+		<div class="col-md-6 mb-3">
+			<a asp-area="Instructor" asp-controller="ManageBranches" asp-action="CreateBranch" class="btn btn-primary">
+				<i class="fa fa-plus"></i> Yeni Branş Oluştur</a>
+		</div>
+		<div class="col-md-6 text-end mb-3">
+				<a asp-area="Instructor" asp-controller="ManageBranches" asp-action="BranchAssignments" class="btn btn-primary">
+				Branş Atamaları
+				<i class="fa fa-arrow-right"></i>
+				</a>
+		</div>
+		<div class="col-md-12">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Branch Name</th>
+						<th>Branch Desc</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var branch in branches)
+					{
+						var assignment = branchAssignments.FirstOrDefault(a => a.BranchId == branch.BranchId);
+						var course = courses.FirstOrDefault(c => c.BranchId == branch.BranchId);
+						<tr>
+							<td>@branch.Name</td>
+							<td>@branch.Description</td>
+							<td>
+								<form method="get" asp-action="UpdateBranch" class="d-inline">
+									<input type="hidden" name="branchId" value="@branch.BranchId" />
+									<input type="hidden" name="branchName" value="@branch.Name" />
+									<input type="hidden" name="description" value="@branch.Description" />
+									<button type="submit" class="btn btn-secondary" title="Düzenle">
+										<i class="fa fa-edit"></i>
+									</button>
+								</form>
+								@if (assignment == null || course == null)
+								{
+									<form method="post" asp-action="DeleteBranch" class="d-inline" title="Sil">
+										<input type="hidden" name="branchId" value="@branch.BranchId" />
+										<button class="btn btn-danger"><i class="fa fa-trash"></i></button>
+									</form>
+								}
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	@* 	<div class="col-md-12">
+		@if (Model.ErrorMessage != null)
+		{
+			<div class="alert alert-danger">
+				@Model.ErrorMessage
+			</div>
+		}
+		@if (Model.SuccessMessage != null)
+		{
+			<div class="alert alert-success">
+				@Model.SuccessMessage
+			</div>
+		}
+	</div> *@
+}
+else
+{
+	<div class="alert alert-info">
+		Branş bulunamadı. <a asp-area="Instructor" asp-controller="ManageBranches" asp-action="CreateBranch">Yeni bir branş oluştur</a>.
+	</div>
+}

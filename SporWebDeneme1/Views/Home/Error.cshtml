@@ -1,0 +1,54 @@
+﻿@model SporWebDeneme1.Models.ErrorViewModel
+@{
+    ViewData["Title"] = "Hata";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="alert alert-danger shadow-sm p-4 rounded">
+                <h4 class="alert-heading">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Bir hata oluştu
+                </h4>
+                <p class="mb-0">
+                    Üzgünüz, işleminiz sırasında beklenmeyen bir hata meydana geldi.
+                </p>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model?.RequestId))
+            {
+                <p class="text-muted mt-3">
+                    <strong>Takip Kodu:</strong> @Model.RequestId
+                    <br />
+                    Bu kod ile sistem yöneticisine başvurabilirsiniz.
+                </p>
+            }
+
+            @* Development ortamında exception bilgisi göster (opsiyonel) *@
+#if DEBUG
+            @if (ViewBag.Exception != null)
+            {
+                <div class="card mt-4">
+                    <div class="card-header bg-dark text-white">
+                        Hata Detayları (Sadece Development)
+                    </div>
+                    <div class="card-body">
+                        <pre class="mb-0">@ViewBag.Exception</pre>
+                    </div>
+                </div>
+            }
+#endif
+
+            <div class="mt-4">
+                <a href="javascript:history.back()" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Geri Dön
+                </a>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-primary">
+                    <i class="bi bi-house-door"></i> Ana Sayfa
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>

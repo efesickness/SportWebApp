@@ -1,0 +1,35 @@
+﻿@{
+	var courses = ViewBag.Courses as List<SporWebDeneme1.Entities.Models.Course>;
+	var errorMessage = TempData["ErrorMessage"] as string;
+	var successMessage = TempData["SuccessMessage"] as string;
+}
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+	<div class="alert alert-danger">@errorMessage</div>
+}
+@if (!string.IsNullOrEmpty(successMessage))
+{
+	<div class="alert alert-success">@successMessage</div>
+}
+<div class="display-4 mb-2">Aktif Kurslar</div>
+<div class="row">
+
+	@foreach (var item in courses)
+	{
+		<div class="col-md-3">
+			<div class="card border-primary mb-3" style="max-width: 18rem;">
+				<div class="card-header bg-primary text-white">Branş: @item.Branch.Name</div>
+				<div class="card-body text-primary">
+					<h5 class="card-title">@item.Title</h5>
+					<p class="card-text">@item.Description</p>
+					<form asp-action="Register" asp-controller="ActiveCourses" asp-area="Student" method="get">
+						<input type="hidden" name="courseId" id="courseId" value="@item.CourseId" />
+						<button type="submit" class="btn btn-primary">
+							Kayıt Ol
+						</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	}
+</div>

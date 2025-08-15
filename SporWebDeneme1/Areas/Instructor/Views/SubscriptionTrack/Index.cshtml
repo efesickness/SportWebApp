@@ -1,0 +1,79 @@
+﻿@model SubscriptionViewModel
+<div class="display-4 mb-4">Aidat Tablosu</div>
+
+<div class="mb-2">
+	<i class="fa fa-square text-danger"></i>
+	Aboneliği bitmiş olanlar
+	<i class="fa fa-square text-warning"></i>
+	Aboneliği bitmesine 5 günden az kalanlar
+</div>
+<table class="table table-striped">
+	<thead class="lead">
+		<tr>
+			<th>İsim Soyisim</th>
+			<th>Email</th>
+			<th>Kurs</th>
+			<th>Kalan Gün</th>
+			<th>Geçen Gün</th>
+			<th>Abonelik İşlemleri</th>
+		</tr>
+	</thead>
+	<tbody class="lead">
+		@foreach (var item in Model.StudentSubscription)
+		{
+
+			<tr class="@((item.EndDate < DateTime.Now) ? "bg-danger text-white" : ((item.EndDate - DateTime.Now).Days <= 5 ? "bg-warning text-dark" : ""))">
+				<td>@($"{item.User.Name} {item.User.Surname}")</td>
+				<td>@item.User.Email</td>
+				<td>@item.Registration.Course.Title</td>
+				@if (item.EndDate >= DateTime.Now)
+				{
+					<td>@((item.EndDate - DateTime.Now).Days)</td>
+					<td>
+						0
+					</td>
+				}
+				else if (item.EndDate < DateTime.Now)
+				{
+					<td>
+						0
+					</td>
+					<td>@((DateTime.Now - item.EndDate).Days)</td>
+				}
+				else
+				{
+					<td>
+						0
+					</td>
+					<td>@((DateTime.Now - item.EndDate).Days)</td>
+				}
+				<td>
+					@if (!item.IsActive)
+					{
+						<a asp-action="Activate" asp-route-id="@item.SubscriptionId" class="btn btn-dark"
+						   title="Aboneliği aktif et">
+							<i class="fa fa-toggle-off"></i>
+						</a>
+					}
+					else
+					{
+
+						<a asp-action="Deactivate" asp-route-id="@item.SubscriptionId" class="btn btn-success"
+						   title="Aboneliği pasif et">
+							<i class="fa fa-toggle-on"></i>
+						</a>
+					}
+					<a asp-action="Renew" asp-route-id="@item.SubscriptionId" class="btn btn-dark @((item.IsActive == false) ? "disabled" : "")"
+					   title="Aboneliği yenile">
+						<i class="fa fa-refresh"></i>
+					</a>
+					<a asp-action="Delete" asp-route-id="@item.SubscriptionId" class="btn btn-danger"
+					   title="Aboneliği sil"
+					onclick="return confirm('Bu aboneliği silerseniz aboneliğe bağlı ödemeler ve kurs kaydı da silinecek. Devam edilsin mi?')">
+						<i class="fa fa-trash"></i>
+					</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

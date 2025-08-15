@@ -1,0 +1,92 @@
+﻿@model IEnumerable<SporWebDeneme1.Entities.Models.CourseSession>
+@{
+	var editSuccessMessage = TempData["EditSuccessMessage"] as string;
+	var editErrorMessage = TempData["EditErrorMessage"] as string;
+}
+
+@if (!string.IsNullOrEmpty(editSuccessMessage))
+{
+	<div class="alert alert-success">@editSuccessMessage</div>
+}
+@if (!string.IsNullOrEmpty(editErrorMessage))
+{
+	<div class="alert alert-danger">@editErrorMessage</div>
+}
+
+<h2 class="display-3">Kurs Grupları</h2>
+<form method="get" asp-action="Create">
+	@if (Model is null)
+	{
+		<input type="hidden" name="courseId" id="courseId" value="0" />
+
+	}
+	else
+	{
+		<input type="hidden" name="courseId" id="courseId" value="@(Model.First().CourseId)" />
+	}
+	<input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+	<button type="submit" class="btn btn-primary mb-4" @(Model.First().Course.IsActive ? "" : "disabled")>
+		<i class="fa fa-plus"></i>
+		Yeni Grup Ekle
+	</button>
+</form>
+
+<table class="table table-hover table-striped">
+	<thead class="lead">
+		<tr>
+			<th>Kurs</th>
+			<th>Eğitmen</th>
+			<th>Grup Başlığı</th>
+			<th>Kişi</th>
+			<th>#</th>
+		</tr>
+	</thead>
+	<tbody class="lead">
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>@item.Course?.Title</td>
+				<td>@($"{item.ApplicationUser?.Name} {item.ApplicationUser?.Surname}") (@item.ApplicationUser?.UserName)</td>
+				<td>@item.Title</td>
+				<td>
+					@item.Registrations.Count()
+				<td>
+					<form method="post" asp-route-id="@item.CourseSessionId" asp-action="Delete" class="d-inline">
+						<button type="submit" class="btn btn-danger"
+								onclick="return confirm('Bu kaydı silerseniz ilgili diğer kayıtlar da silinecek! Bu kaydı silmek istediğinize emin misiniz?')"
+								data-bs-toggle="tooltip" title="Öğeyi sil">
+							<i class="fa fa-trash"></i>
+						</button>
+					</form>
+					<form method="get" asp-route-id="@item.CourseSessionId" asp-action="Edit" class="d-inline">
+						<input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+						<button type="submit" class="btn btn-warning"
+								@(Model.First().Course.IsActive ? "" : "disabled")
+								data-bs-toggle="tooltip" title="Düzenle">
+							<i class="fa fa-edit"></i>
+						</button>
+					</form>
+					<a class="btn btn-success" asp-action="Details" asp-route-id="@item.CourseSessionId"
+					   data-bs-toggle="tooltip" title="Detaylar">
+						<i class="fa fa-info-circle"></i>
+					</a>
+					<form method="get" asp-action="AddStudent" asp-route-id="@item.CourseSessionId" class="d-inline">
+						<button class="btn btn-primary" type="submit"
+								@(Model.First().Course.IsActive ? "" : "disabled")
+								data-bs-toggle="tooltip" title="Öğrenci ekle">
+							<i class="fa fa-user-plus"></i>
+						</button>
+					</form>
+					<form method="get" asp-action="Take" asp-controller="Attendance" asp-area="Instructor" class="d-inline">
+						<input type="hidden" value="@item.CourseSessionId" name="sessionId" id="sessionId" />
+						<button class="btn btn-secondary" type="submit"
+								@(Model.First().Course.IsActive ? "" : "disabled")
+								data-bs-toggle="tooltip" title="Yoklama al">
+							<i class="fa fa-check"></i>
+						</button>
+					</form>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

@@ -1,0 +1,79 @@
+﻿@using SporWebDeneme1.Entities.Models
+@model CourseSessionViewModel
+@{
+	var courses = ViewBag.Courses as List<SporWebDeneme1.Entities.Models.Course>;
+	var instructors = ViewBag.Instructors as List<SporWebDeneme1.Entities.Models.ApplicationUser>;
+	var assignments = ViewBag.Assignments as List<SporWebDeneme1.Entities.Models.BranchAssignment>;
+}
+
+<h2 class="display-4">Yeni Grup Ekle</h2>
+
+<form asp-action="Create" method="post" class="lead fw-normal">
+	<div class="text-danger" asp-validation-summary="All"></div>
+	<input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+	<input type="hidden" asp-for="IsActive" value="true" />
+	<div class="form-group my-2">
+		<label>Seçili Kurs:</label>
+		<select asp-for="CourseId" class="form-control">
+			@if (courses != null)
+			{
+				<option value="@ViewBag.CourseId">@(courses.First(x => x.CourseId == ViewBag.CourseId).Title)</option>
+			}
+		</select>
+	</div>
+
+	<div class="form-group my-2">
+		<label>Eğitmen Seç</label>
+		<select asp-for="UserId" class="form-control">
+			@foreach (var instructor in instructors)
+			{
+				<option value="@instructor.Id">@($"{instructor.Name} {instructor.Surname}")
+					(Branş: @(assignments.Where(x => x.UserId == instructor.Id).Select(x => x.Branch.Name).FirstOrDefault())) (@instructor.UserName)
+				</option>
+			}
+		</select>
+	</div>
+
+	<div class="form-group my-2">
+		<label>Grup Başlığı</label>
+		<input asp-for="Title" class="form-control" />
+	</div>
+
+	<div class="form-group my-2">
+		<label>Grup Açıklaması</label>
+		<textarea asp-for="Description" class="form-control"></textarea>
+	</div>
+
+
+	<div class="form-group my-4">
+		<div class="row">
+			<div class="col-md-3">
+				<label>Hangi Günler Yapılacak?</label>
+			</div>
+			<div class="col-md-2">
+				<label class="me-2">Başlangıç</label>
+			</div>
+			<div class="col-md-2">
+				<label>Bitiş</label>
+			</div>
+		</div>
+		<div class="row">
+			@for (int i = 0; i < Model.Days.Count; i++)
+			{
+				<div class="col-md-3 my-2">
+					<input asp-for="Days[i].IsSelected" type="checkbox" class="form-check-input" />
+					<label>@Model.Days[i].Day</label>
+				</div>
+				<div class="col-md-2 my-2">
+					<input asp-for="Days[i].StartTime" type="time" class="form-control d-inline" />
+					<input type="hidden" asp-for="Days[i].Day" />
+				</div>
+				<div class="col-md-2 my-2">
+					<input asp-for="Days[i].EndTime" type="time" class="form-control d-inline" />
+				</div>
+				<div class="col-md-5"></div>
+			}
+		</div>
+	</div>
+	<button type="submit" class="btn btn-success">Oturumu Kaydet</button>
+</form>

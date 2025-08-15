@@ -1,0 +1,18 @@
+﻿@model SporWebDeneme1.Entities.Models.Branch
+
+<div class="display-3">
+	Branşı Düzenle
+</div>
+<form asp-area="Instructor" asp-controller="ManageBranches" asp-action="UpdateBranch" method="post">
+	<input type="hidden" asp-for="BranchId" value="@Model.BranchId"/>
+	<div class="form-group">
+		<label for="branchName">Branş Adı</label>
+		<input type="text" class="form-control" id="branchName" asp-for="Name" required />
+	</div>
+	<div class=" form-group mb-3">
+		<label for="description">Branş Açıklaması</label>
+<textarea class="form-control" id="description" asp-for="Description" rows="3" required></textarea>
+	</div>
+	<button type="submit" class="btn btn-primary">Kaydet</button>
+	<a asp-area="Instructor" asp-controller="ManageBranches" asp-action="Index" class="btn btn-secondary">Geri Dön</a>
+</form>

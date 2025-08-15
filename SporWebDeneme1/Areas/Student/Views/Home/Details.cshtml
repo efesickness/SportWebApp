@@ -1,0 +1,48 @@
+﻿@using SporWebDeneme1.Areas.Student.Models
+@model CourseDetailsViewModel
+<h2>Kurs Detayları</h2>
+
+@if (Model is not null)
+{
+	<div class="card mb-3">
+		<div class="card-header">
+			<strong>@Model.branch</strong>
+		</div>
+		<div class="card-body">
+			<dl class="row">
+				<dt class="col-sm-3">Branş</dt>
+				<dd class="col-sm-3">@Model.branch</dd>
+
+				<dt class="col-sm-3">Antrenör</dt>
+				<dd class="col-sm-3">@Model.instructor</dd>
+
+				<dt class="col-sm-3">Kurs</dt>
+				<dd class="col-sm-3">@Model.courseName</dd>
+
+				<dt class="col-sm-3">Açıklama</dt>
+				<dd class="col-sm-3">@Model.courseDescription</dd>
+
+				<dt class="col-sm-3">Son Ödeme</dt>
+				<dd class="col-sm-3">@Model.lastPayment.ToShortDateString()</dd>
+
+				<dt class="col-sm-3">Bir Sonraki Ödeme</dt>
+				<dd class="col-sm-3">@Model.nextPayment.ToShortDateString()</dd>
+
+				<dt class="col-sm-3">Grup</dt>
+				<dd class="col-sm-3">@Model.courseSession</dd>
+
+				<dt class="col-sm-3">Son Ödenen Tutar</dt>
+				<dd class="col-sm-3">@Model.lastPaymentAmount</dd>
+
+			</dl>
+		</div>
+	</div>
+
+}
+else
+{
+	<div class="alert alert-warning">
+		Kurs detayları bulunamadı.
+	</div>
+}
+

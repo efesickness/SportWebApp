@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "Antrenman Takvimi";
+	var successMessage = TempData["SuccessMessage"] as string;
+	var errorMessage = TempData["ErrorMessage"] as string;
+}
+@if(successMessage != null)
+{
+	<div class="alert alert-success">
+		@successMessage
+	</div>
+}
+@if(errorMessage != null)
+{
+	<div class="alert alert-danger">
+		@errorMessage
+	</div>
+}
+
+<a class="btn btn-primary mb-3" asp-action="Create" asp-controller="TrainingSessions" asp-area="Instructor">Antrenman Oluştur</a>
+<h2 class="display-4">Antrenman Takvimi</h2>
+<div id="calendar" class="mb-5"></div>
+<div class="modal fade" id="eventDetailsModal" tabindex="-1" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="eventTitle"></h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+			</div>
+			<div class="modal-body">
+				<p><strong>Açıklama:</strong> <span id="eventDescription"></span></p>
+				<p><strong>Başlangıç:</strong> <span id="eventStartTime"></span></p>
+				<p><strong>Bitiş:</strong> <span id="eventEndTime"></span></p>
+				<p><strong>Tarih:</strong> <span id="eventDate"></span></p>
+			</div>
+			<div class="modal-footer">
+				<a href="#" id="editLink" class="btn btn-primary">Düzenle</a>
+				<a href="#" id="takeAttendance" class="btn btn-primary">Yoklama Al</a>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			var calendarEl = document.getElementById('calendar');
+
+			var calendar = new FullCalendar.Calendar(calendarEl, {
+				initialView: 'dayGridMonth',
+				locale: 'tr',
+			events: '/Instructor/TrainingSessions/GetEvents',
+				eventClick: function(info) {
+					alert("Grup: "+info.event.title + "\n" +
+					"Açıklama: " + info.event.extendedProps.description + "\n" +
+					"Tarih: " + info.event.extendedProps.date+ "\n"+
+					"Başlangıç: " + info.event.extendedProps.startTime + "\n" +
+					"Bitiş: " + info.event.extendedProps.endTime);
+				}
+			});
+
+			calendar.render();
+		});
+						document.addEventListener('DOMContentLoaded', function() {
+				  var calendarEl = document.getElementById('calendar');
+				  var eventModal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
+
+				  var calendar = new FullCalendar.Calendar(calendarEl, {
+					initialView: 'dayGridMonth',
+					locale: 'tr',
+					events: '/Instructor/TrainingSessions/GetEvents',
+				eventClick: function(info) {
+					  document.getElementById('eventTitle').textContent = info.event.title;
+					  document.getElementById('eventDescription').textContent = info.event.extendedProps.description;
+					  document.getElementById('eventStartTime').textContent = info.event.extendedProps.startTime;
+					  document.getElementById('eventEndTime').textContent = info.event.extendedProps.endTime;
+					  document.getElementById('eventDate').textContent = info.event.extendedProps.date;
+
+					  var editUrl = '/Instructor/TrainingSessions/Edit?id=' + info.event.id;
+					  document.getElementById('editLink').href = editUrl;
+
+					  var attendanceUrl = '/Instructor/TrainingSessions/TakeAttendance?trainingId=' + info.event.id;
+					  document.getElementById('takeAttendance').href = attendanceUrl;
+
+					  eventModal.show();
+					}
+				  });
+
+				  calendar.render();
+				});
+	</script>

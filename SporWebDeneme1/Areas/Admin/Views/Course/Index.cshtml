@@ -1,0 +1,55 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using SporWebDeneme1.Entities.Models
+@inject UserManager<ApplicationUser> UserManager
+@model IEnumerable<Course>
+
+@await Html.PartialAsync("/Areas/Course/Views/Course/Index.cshtml")
+
+
+@*
+<h2 class="display-3">Kurs Şablonları</h2>
+<a class="btn btn-primary" asp-action="Create">Yeni Kurs Şablonu Ekle</a>
+
+<table class="table table-hover table-striped">
+	<thead class="lead">
+		<tr>
+			<th>Başlık</th>
+			<th>Açıklama</th>
+			<th>Kapasite</th>
+			<th>Oluşturan</th>
+			<th>Aktif Mi</th>
+			<th>#</th>
+		</tr>
+	</thead>
+	<tbody class="lead">
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>@item.Title</td>
+				<td>@item.Description</td>
+				<td>@item.Capacity</td>
+				<td>@(await UserManager.GetUserNameAsync(await UserManager.FindByIdAsync(item.UserId)))</td>
+				<td>
+					@if (item.IsActive)
+					{
+						<i class="fa-solid fa-check text-success"></i>
+					}
+					else
+					{
+						<i class="fa-solid fa-xmark text-danger"></i>
+					}
+				</td>
+				<td>
+					<form method="post" asp-route-id="@item.CourseId" asp-action="Delete">
+						<button type="submit" class="btn btn-danger"
+								onclick="return confirm('Bu kaydı silerseniz ilgili diğer kayıtlar da silinecek! Bu kaydı silmek istediğinize emin misiniz?')">
+							Sil
+						</button>
+					</form>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+*@

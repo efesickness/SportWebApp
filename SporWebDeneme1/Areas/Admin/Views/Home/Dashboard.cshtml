@@ -1,0 +1,114 @@
+﻿@model AdminDashboardViewModel
+@{
+	ViewData["Title"] = "Yönetim Paneli";
+
+}
+
+<h2 class="display-4">Genel İstatistikler</h2>
+<ul class="lead">
+	<li>Kurs Sayısı: @Model.TotalCourses</li>
+	<li>Eğitmen Sayısı: @Model.TotalInstructors</li>
+	<li>Öğrenci Sayısı: @Model.TotalStudents</li>
+	<li>Kayıt Sayısı: @Model.TotalRegistrations</li>
+	<li>Toplam Gelir: @Model.TotalRevenue.ToString("c")</li>
+</ul>
+
+<h3 class="display-4">En Popüler Kurslar</h3>
+<table class="table lead mb-5 table-striped table-hover table-bordered">
+	<thead class="table-dark">
+		<tr>
+			<th>Kurs Adı</th>
+			<th>Kayıt Sayısı</th>
+		</tr>
+	</thead>
+	<tbody>
+		@if (Model is not null && Model.TotalCourses is not 0)
+		{
+			@foreach (var course in Model.TopCourses)
+			{
+				<tr>
+					<td>@course.CourseTitle</td>
+					<td>@course.RegistrationCount</td>
+				</tr>
+			}
+		}
+	</tbody>
+</table>
+
+<h3 class="display-4 mt-5">Son Kurs Kayıtları</h3>
+<table class="table lead table-striped table-hover table-bordered">
+	<thead class="table-dark">
+		<tr>
+			<th>Öğrenci</th>
+			<th>Kurs</th>
+			<th>Tarih</th>
+			<th>Fiyat</th>
+		</tr>
+	</thead>
+	<tbody>
+		@if (Model is not null && Model.RecentRegistrations.Count>0)
+		{
+
+			@foreach (var reg in Model.RecentRegistrations)
+			{
+				<tr>
+					<td>@reg.ApplicationUser.Name @reg.ApplicationUser.Surname</td>
+					<td>@reg?.Course?.Title</td>
+					<td>@reg?.RegistrationDate.ToShortDateString()</td>
+					<td>
+						@(Model.Payments.Where(x => x.SubscriptionId == Model
+										.StudentSubscriptions
+										.Where(x => x.RegistrationId == reg?.RegistrationId)
+										.Select(x => x.SubscriptionId).Max()).Select(x => x.Amount).First().ToString("c"))
+			</td>
+		</tr>
+				}
+		}
+	</tbody>
+</table>
+
+<h3 class="display-4 mt-5">Son Kullanıcı Kayıtları</h3>
+<table class="table lead table-striped table-hover table-bordered">
+	<thead class="table-dark">
+		<tr>
+			<th>Ad</th>
+			<th>Soyad</th>
+			<th>Email</th>
+			<th>Kayıt Tarihi</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var user in Model.RecentRegistrants)
+		{
+			<tr>
+				<td>@user.Name</td>
+				<td>@user.Surname</td>
+				<td>@user.Email</td>
+				<td>@user.RegistrationDate</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+<h3 class="display-4 mt-5">Son Kullanıcı Girişleri</h3>
+<table class="table lead table-striped table-hover table-bordered">
+	<thead class="table-dark">
+		<tr>
+			<th>Ad</th>
+			<th>Soyad</th>
+			<th>Email</th>
+			<th>Son Giriş</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var user in Model.RecentLogins)
+		{
+			<tr>
+				<td>@user.Name</td>
+				<td>@user.Surname</td>
+				<td>@user.Email</td>
+				<td>@(user.LastLoginDate)</td>
+			</tr>
+		}
+	</tbody>
+</table>

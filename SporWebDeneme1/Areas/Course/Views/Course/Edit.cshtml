@@ -1,0 +1,52 @@
+﻿@model CourseViewModel
+@{
+	var instructors = ViewBag.Instructors as List<SporWebDeneme1.Entities.Models.ApplicationUser>;
+}
+<h2 class="display-4">Kursu Düzenle</h2>
+
+<form asp-action="Edit" method="post" class="lead fw-normal">
+	<input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+	<input type="hidden" asp-for="CourseId" value="@Model.CourseId"/>
+	<div class="form-group mb-2">
+		<label>Başlık</label>
+		<input asp-for="Title" class="form-control" />
+	</div>
+	<div class="form-group mb-2">
+		<label>Açıklama</label>
+		<textarea asp-for="Description" class="form-control"></textarea>
+	</div>
+	<div class="form-group mb-2">
+		<label>Kapasite</label>
+		<input asp-for="Capacity" class="form-control" type="number" />
+	</div>
+	<div class="form-group">
+		<label>Başlangıç Tarihi</label>
+		<input asp-for="StartDate" type="datetime-local" class="form-control" />
+	</div>
+
+	<div class="form-group">
+		<label>Bitiş Tarihi</label>
+		<input asp-for="EndDate" type="datetime-local" class="form-control" />
+	</div>
+	<div class="form-group mb-2">
+		<label>Eğitmen Seç</label>
+		<select asp-for="UserId" class="form-control">
+			@if (instructors is not null)
+			{
+				@foreach (var instructor in instructors)
+				{
+					<option value="@instructor.Id">@($"{instructor.Name} {instructor.Surname}") (@instructor.UserName)</option>
+				}
+			}
+		</select>
+	</div>
+	<div class="form-group mb-2">
+		<label>Aktif mi?</label>
+		<input asp-for="IsActive" type="checkbox" class="form-check-input" />
+	</div>
+	<div class="form-group mb-2">
+		<label>Ücret</label>
+		<input asp-for="Price" class="form-control" type="number" />
+	</div>
+	<button type="submit" class="btn btn-success">Kaydet</button>
+</form>

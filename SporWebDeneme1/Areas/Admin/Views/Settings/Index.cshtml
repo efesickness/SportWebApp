@@ -1,0 +1,43 @@
+﻿@model SiteSettingsViewModel
+@{
+    ViewData["Title"] = "Sistem Ayarları";
+    var successMessage = TempData["Success"] as string;
+    var errorMessage = TempData["Failed"] as string;
+}
+<a class="btn btn-lg btn-primary mb-5 w-100" asp-action="EmailEdit">
+    E-Mail Ayarlarına Git
+    <i class="fa fa-arrow-right"></i>
+</a>
+
+<div class="alert alert-danger display-4">BU KISIM ŞU AN DEVRE DIŞI</div>
+
+<h2 class="display-3">Sistem Ayarları</h2>
+
+<form asp-action="Index" method="post" class="lead">
+    <div class="form-group mb-3">
+        <label class="form-check-label">Yeni Kullanıcı Kaydı Açık mı?</label>
+        <input asp-for="RegistrationEnabled" type="checkbox" class="form-check-input" />
+    </div>
+    <div class="form-group mb-3">
+        <label>E-Posta Onayı Gerekli mi?</label>
+        <input asp-for="RequireEmailConfirmation" type="checkbox" class="form-check-input" />
+    </div>
+    <div class="form-group mb-3">
+        <label>Kullanıcı Başına Maksimum Kurs</label>
+        <input asp-for="MaxCoursesPerUser" class="form-control" />
+    </div>
+    <div class="form-group mb-3">
+        <label>Varsayılan Kurs Ücreti</label>
+        <input asp-for="DefaultCoursePrice" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+</form>
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="alert alert-success mt-2">@successMessage</div>
+}
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger mt-2">@errorMessage</div>
+}

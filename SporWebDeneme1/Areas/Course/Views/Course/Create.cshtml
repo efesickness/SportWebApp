@@ -1,0 +1,63 @@
+﻿@model CourseViewModel
+@{
+	var instructors = ViewBag.Instructors as List<SporWebDeneme1.Entities.Models.ApplicationUser>;
+	var branches = ViewBag.Branches as List<SporWebDeneme1.Entities.Models.Branch>;
+}
+<h2 class="display-4">Yeni Kurs Ekle</h2>
+
+<form asp-action="Create" class="lead fw-normal">
+	<div class="form-group mb-2">
+		<label>Branş</label>
+		<select asp-for="BranchId" class="form-control">
+			@if (branches.Count > 0)
+			{
+				foreach (var branch in branches)
+				{
+					<option value="@branch.BranchId">@branch.Name</option>
+				}
+			}
+		</select>
+	</div>
+	<div class="form-group mb-2">
+		<label>Başlık</label>
+		<input asp-for="Title" class="form-control" />
+	</div>
+	<div class="form-group mb-2">
+		<label>Açıklama</label>
+		<textarea asp-for="Description" class="form-control"></textarea>
+	</div>
+	<div class="form-group mb-2">
+		<label>Kapasite</label>
+		<input asp-for="Capacity" class="form-control" type="number" />
+	</div>
+	<div class="form-group">
+		<label>Başlangıç Tarihi</label>
+		<input asp-for="StartDate" type="datetime-local" class="form-control" />
+	</div>
+
+	<div class="form-group">
+		<label>Bitiş Tarihi</label>
+		<input asp-for="EndDate" type="datetime-local" class="form-control" />
+	</div>
+	<div class="form-group mb-2">
+		<label>Eğitmen Seç</label>
+		<select asp-for="UserId" class="form-control">
+			@if (instructors is not null)
+			{
+				@foreach (var instructor in instructors)
+				{
+					<option value="@instructor.Id">@($"{instructor.Name} {instructor.Surname}") (@instructor.UserName)</option>
+				}
+			}
+		</select>
+	</div>
+	<div class="form-group mb-2">
+		<label>Aktif mi?</label>
+		<input asp-for="IsActive" type="checkbox" checked class="form-check-input" />
+	</div>
+	<div class="form-group mb-2">
+		<label>Ücret</label>
+		<input asp-for="Price" class="form-control" type="number" />
+	</div>
+	<button type="submit" class="btn btn-success">Kaydet</button>
+</form>

@@ -1,0 +1,170 @@
+﻿@model TrainingSessionViewModel
+<h2>Yeni Antrenman Ekle</h2>
+
+
+<div class="mb-5">
+	<form asp-action="Create" method="post" class="d-inline">
+		<div class="form-group col-md-4">
+			<label>Grup Seç</label>
+			<select asp-for="CourseSessionId" id="input1" class="form-control" required>
+				@foreach (var cs in Model.CourseSessions)
+				{
+					<option value="@cs.CourseSessionId">@cs.Title</option>
+				}
+			</select>
+		</div>
+
+		<div class="form-group col-md-4">
+			<label>Antrenör Seç</label>
+			<select asp-for="UserId" id="input2" class="form-control" required>
+				@foreach (var instructor in Model.Instructors)
+				{
+					<option value="@instructor.Id">@instructor.Name @instructor.Surname</option>
+				}
+			</select>
+		</div>
+
+		<div class="form-group col-md-2">
+			<label>Tarih</label>
+			<input asp-for="Date" type="date" value="" id="input3" class="form-control" required />
+		</div>
+
+		<div class="form-group col-md-2">
+			<label>Başlangıç Saati</label>
+			<input asp-for="StartTime" type="time" id="input4" class="form-control" required />
+		</div>
+
+		<div class="form-group col-md-2 mb-3">
+			<label>Bitiş Saati</label>
+			<input asp-for="EndTime" type="time" id="input5" class="form-control" required />
+		</div>
+
+		<div class="form-group mb-2">
+			<label>Yardımcı Antrenörler</label><br />
+			<select class="js-example-basic-multiple" multiple="multiple" style="width:50%" id="input6" asp-for="SelectedTrainingAssistants">
+				@foreach (var instructor in Model.Instructors)
+				{
+					<option value="@instructor.Id">@instructor.Name @instructor.Surname</option>
+				}
+			</select>
+		</div>
+
+		<div class="form-group mb-2">
+			<label>Görevliler</label><br />
+			<select class="js-example-basic-multiple" multiple="multiple" style="width:50%" id="input7" asp-for="SelectedTrainingStaffs">
+				@foreach (var instructor in Model.Instructors)
+				{
+					<option value="@instructor.Id">@instructor.Name @instructor.Surname</option>
+				}
+			</select>
+		</div>
+
+		<div class="form-group mb-2 col-md-4">
+			<label>Not</label>
+			<textarea rows="4" asp-for="Note" class="form-control" id="input8"></textarea>
+		</div>
+
+		<button type="submit" class="btn btn-success">Kaydet</button>
+	</form>
+	<button class="btn btn-primary d-inline" id="multi-record-btn">Çoklu Kayıt</button>
+</div>
+
+<!-- Modal Panel -->
+<div class="modal" id="multiRecordModal" tabindex="-1" role="dialog" aria-labelledby="multiRecordModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="multiRecordModalLabel">Çoklu Kayıt Paneli</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+			</div>
+			<form method="post" asp-action="CreateSeries" id="multiRecordForm">
+				<div class="modal-body">
+
+					<input type="hidden" asp-for="CourseSessionId" id="courseSessionId" />
+					<input type="hidden" asp-for="UserId" id="userId" />
+					<input type="hidden" asp-for="SelectedTrainingAssistants" id="selectedTrainingAssistants" />
+					<input type="hidden" asp-for="SelectedTrainingStaffs" id="selectedTrainingStaffs" />
+					<input type="hidden" asp-for="Note" id="note" />
+					<input type="hidden" asp-for="StartTime" id="startTime" />
+					<input type="hidden" asp-for="EndTime" id="endTime" />
+					<input type="hidden" asp-for="Date" id="date" />
+
+					<div class="form-group">
+						<label>Başlangıç Tarih</label>
+						<input asp-for="StartDate" type="date" value="" class="form-control" required />
+					</div>
+
+					<div class="form-group">
+						<label>Başlangıç Tarih</label>
+						<input asp-for="EndDate" type="date" value="" class="form-control" required />
+					</div>
+					<div class="form-group">
+						<label>Hangi Günler</label><br />
+
+						@foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+						{
+							<label>
+								<input type="checkbox" name="SelectedDays" value="@((int)day)" />
+								@day
+							</label>
+
+							<br />
+						}
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+					<button type="submit" class="btn btn-success" id="submitMultiple">Kaydet</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script>
+
+		document.getElementById('multi-record-btn').addEventListener('click', function() {
+		var input1 = document.getElementById('input1').value.trim();
+		var input2 = document.getElementById('input2').value.trim();
+		var input3 = document.getElementById('input3').value.trim();
+		var input4 = document.getElementById('input4').value.trim();
+		var input5 = document.getElementById('input5').value.trim();
+		var input6 = document.getElementById('input6').value.trim();
+		var input7 = document.getElementById('input7').value.trim();
+		var input8 = document.getElementById('input8').value.trim();
+
+		const checkboxes = document.querySelectorAll('input[name="SelectedDays"]:checked');
+
+
+		if (input1 === '' || input2 === '' || input4==='' || input5==='' ) {
+			alert("Lütfen gerekli tüm alanları doldurun.");
+			return;
+		}
+
+		document.getElementById('courseSessionId').value = input1;
+		document.getElementById('userId').value = input2;
+		document.getElementById('date').value = input3;
+		document.getElementById('startTime').value = input4;
+		document.getElementById('endTime').value = input5;
+		document.getElementById('selectedTrainingAssistants').value = input6;
+		document.getElementById('selectedTrainingStaffs').value = input7;
+		document.getElementById('note').value = input8;
+
+		$('#multiRecordModal').modal('show');
+
+
+			const multiForm = document.querySelector('#multiRecordModal form');
+
+	multiForm.addEventListener('submit', function (e) {
+		const checkboxes = document.querySelectorAll('input[name="SelectedDays"]:checked');
+
+		if (checkboxes.length === 0) {
+			e.preventDefault(); 
+			alert("Lütfen en az bir gün seçin.");
+			return;
+		}
+
+	});
+	});
+
+</script>

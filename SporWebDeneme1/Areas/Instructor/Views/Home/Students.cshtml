@@ -1,0 +1,56 @@
+﻿@model List<SporWebDeneme1.Entities.Models.ApplicationUser>
+
+<div class="display-3 mb-3">Öğrencilerim</div>
+<table class="table table-hover table-striped">
+	<thead class="bg-dark text-white">
+		<tr>
+			<th>Adı</th>
+			<th>Soyadı</th>
+			<th>Kullanıcı Adı</th>
+			<th>Email</th>
+			<th>Telefon</th>
+			<th>Doğum Tarihi</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var student in Model)
+		{
+			<tr>
+				<td>@student.Name</td>
+				<td>@student.Surname</td>
+				<td>@student.UserName</td>
+				<td>@student.Email</td>
+				<td>@student.PhoneNumber</td>
+				<td>@student.BirthDate.ToString("d")</td>
+			</tr>
+		}
+	</tbody>
+</table>
+<hr class="mt-5 mb-4"/>
+
+<div class="display-3 mb-3">Tüm Öğrenciler</div>
+<table class="table table-hover table-striped">
+	<thead class="bg-dark text-white">
+	<tr>
+		<th>Adı</th>
+		<th>Soyadı</th>
+		<th>Kullanıcı Adı</th>
+		<th>Email</th>
+		<th>Telefon</th>
+		<th>Doğum Tarihi</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var student in ViewBag.AllStudents)
+	{
+		<tr>
+			<td>@student.Name</td>
+			<td>@student.Surname</td>
+			<td>@student.UserName</td>
+			<td>@student.Email</td>
+			<td>@student.PhoneNumber</td>
+			<td>@student.BirthDate.ToString("d")</td>
+		</tr>
+		}
+	</tbody>
+</table>

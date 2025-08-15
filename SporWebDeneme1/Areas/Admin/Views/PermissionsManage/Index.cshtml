@@ -1,0 +1,45 @@
+﻿@model IEnumerable<SporWebDeneme1.Entities.Models.Permission>
+@{
+    ViewData["Title"] = "Yetkiler";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+    <hr />
+
+    <a asp-action="Create" class="btn btn-primary mb-3">Yeni Yetki Ekle</a>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Ad</th>
+                    <th>Açıklama</th>
+                    <th style="width: 150px;">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var permission in Model)
+                {
+                    <tr>
+                        <td>@permission.Name</td>
+                        <td>@permission.Description</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@permission.PermissionId" class="btn btn-sm btn-warning">Düzenle</a>
+                            <a asp-action="Delete" asp-route-id="@permission.PermissionId" 
+                               class="btn btn-sm btn-danger"
+                               onclick="return confirm('Bu yetkiyi silmek istediğinize emin misiniz?');">
+                                Sil
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="text-muted">Henüz tanımlı yetki yok.</p>
+    }
+</div>

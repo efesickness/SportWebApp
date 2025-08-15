@@ -1,0 +1,133 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using SporWebDeneme1.Entities.Models
+@inject UserManager<ApplicationUser> UserManager
+@model IEnumerable<Course>
+@{
+	var editSuccessMessage = TempData["EditSuccessMessage"] as string;
+	var editErrorMessage = TempData["EditErrorMessage"] as string;
+}
+
+@if (!string.IsNullOrEmpty(editSuccessMessage))
+{
+	<div class="alert alert-success">@editSuccessMessage</div>
+}
+@if (!string.IsNullOrEmpty(editErrorMessage))
+{
+	<div class="alert alert-danger">@editErrorMessage</div>
+}
+<h2 class="display-3">Kurslar</h2>
+<a class="btn btn-primary" asp-action="Create">
+	<i class="fa fa-plus"></i>
+	Kurs Ekle</a>
+
+<table class="table table-hover table-striped">
+	<thead class="lead">
+		<tr>
+			<th scope="col">Branş</th>
+			<th>Başlık</th>
+			<th>Açıklama</th>
+			<th>Kapasite</th>
+			@if (User.IsInRole("Admin"))
+			{
+			<th>Oluşturan</th>
+			}
+			<th>Aktif Mi</th>
+			<th>#</th>
+		</tr>
+	</thead>
+	<tbody class="lead">
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@if (item.Branch != null)
+					{
+						@item.Branch.Name
+					}
+					else
+					{
+						<span class="text-muted">Branş bilgisi yok</span>
+					}
+				<td>@item.Title</td>
+				<td>@item.Description</td>
+				<td>@item.Capacity</td>
+				@if (User.IsInRole("Admin"))
+				{
+					<td>
+						@((await UserManager.FindByIdAsync(item.UserId))?.Email)
+					</td>
+				}
+				<td>
+					@* 					@if (item.IsActive)
+					{
+						<i class="fa-solid fa-check text-success"></i>
+					}
+					else
+					{
+						<i class="fa-solid fa-xmark text-danger"></i>
+					} *@
+
+					@if (!item.IsActive)
+					{
+						<form method="post" asp-route-id="@item.CourseId" asp-action="Activate" class="d-inline">
+							<button type="submit" class="btn btn-secondary"
+									data-bs-toggle="tooltip" title="Kursu şablonunu kullanıma aç">
+								<i class="fa fa-toggle-off"></i>
+							</button>
+						</form>
+					}
+					else
+					{
+						<form method="post" asp-route-id="@item.CourseId" asp-action="Deactivate" class="d-inline">
+							<button type="submit" class="btn btn-success"
+									data-bs-toggle="tooltip" title="Kurs şablonunu kullanıma kapat">
+								<i class="fa fa-toggle-on"></i>
+							</button>
+						</form>
+					}
+				</td>
+				<td>
+					<form method="post" asp-route-id="@item.CourseId" asp-action="Delete" class="d-inline">
+						<button type="submit" class="btn btn-danger"
+								onclick="return confirm('Bu kaydı silerseniz ilgili diğer kayıtlar da silinecek! Bu kaydı silmek istediğinize emin misiniz?')"
+								data-bs-toggle="tooltip" title="Öğeyi sil">
+							<i class="fa fa-trash"></i>
+						</button>
+					</form>
+					<form method="get" asp-route-id="@item.CourseId" asp-action="Edit" class="d-inline">
+						<input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+						<button type="submit" class="btn btn-warning"
+								data-bs-toggle="tooltip" title="Düzenle">
+							<i class="fa fa-pen-to-square"></i>
+						</button>
+					</form>
+
+					@if (item.IsActive)
+					{
+						<form method="get" asp-route-id="@item.CourseId" asp-action="Create" asp-controller="CourseSession" class="d-inline">
+							<input type="hidden" name="courseId" value="@item.CourseId" id="courseId" />
+							<button type="submit" class="btn btn-info"
+									data-bs-toggle="tooltip" title="Bu kursa ait grup oluştur">
+								<i class="fa fa-calendar"></i>
+							</button>
+						</form>
+					}
+					else
+					{
+						<button type="button" class="btn btn-secondary" disabled>
+							<i class="fa fa-calendar"></i>
+						</button>
+					}
+
+					<form class="d-inline" method="get" asp-controller="CourseSession" asp-action="Index">
+						<input type="hidden" name="courseId" value="@item.CourseId" id="courseId" />
+						<button type="submit" class="btn btn-primary"
+								data-bs-toggle="tooltip" title="Bu kursa ait gruplar">
+							<i class="fa fa-arrow-right"></i>
+						</button>
+					</form>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

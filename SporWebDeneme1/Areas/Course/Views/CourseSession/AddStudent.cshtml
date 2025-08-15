@@ -1,0 +1,40 @@
+﻿@model AddStudentViewModel
+
+<h2 class="display-4">Kursa Öğrenci Ekle</h2>
+
+<form asp-action="AddStudent" method="post" class="lead fw-normal">
+	<div class="text-danger" asp-validation-summary="ModelOnly"></div>
+	<div class="form-group">
+		<label>Seçili Kurs:</label>
+		<select asp-for="SelectedCourseSessionId" class="form-control" required>
+			@if (Model != null && Model.CourseSession != null)
+			{
+				<option value="@Model.CourseSession.CourseSessionId">
+					@Model.CourseSession.Course.Title
+				</option>
+			}
+		</select>
+	</div>
+
+	<div class="form-group">
+		<label>Öğrenci Seç</label>
+		<select asp-for="SelectedUserId" class="form-control">
+			@foreach (var student in Model.Students)
+			{
+				<option value="@student.Id">@($"{student.Name} {student.Surname}") (@student.UserName) (Yaş: @(((DateOnly.FromDateTime(DateTime.Now).DayNumber - student.BirthDate.DayNumber)/365)))</option>
+			}
+		</select>
+	</div>
+
+	<div class="form-group">
+		<div class="col-md-2">
+
+			<label>Kayıt Tarihi</label>
+			<input asp-for="Registration.RegistrationDate" type="datetime-local" class="form-control" required/>
+			<span asp-validation-for="Registration.RegistrationDate" class="text-danger"></span>
+		</div>
+		<div class="col-md-10"></div>
+	</div>
+
+	<button type="submit" class="btn btn-success mt-2">Öğrenciyi Ekle</button>
+</form>

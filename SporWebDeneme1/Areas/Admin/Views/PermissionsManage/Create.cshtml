@@ -1,0 +1,31 @@
+﻿@model SporWebDeneme1.Entities.Models.Permission
+@{
+    ViewData["Title"] = "Yeni Yetki Ekle";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+    <hr />
+
+    <form asp-action="Create" method="post">
+		<div asp-validation-summary="All" class="text-danger mb-3"></div>
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">Yetki Adı</label>
+            <input asp-for="Name" class="form-control" placeholder="Örn: 'CanAddPermission'" required />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">Açıklama</label>
+            <textarea asp-for="Description" class="form-control" rows="2" placeholder="Bu yetkinin ne işe yaradığını açıklayın"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Kaydet</button>
+        <a asp-action="Index" class="btn btn-secondary">İptal</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

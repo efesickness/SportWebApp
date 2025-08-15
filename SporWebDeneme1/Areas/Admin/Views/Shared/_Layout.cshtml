@@ -1,0 +1,139 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using SporWebDeneme1.Entities.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - B.U.Ü</title>
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/SporWebDeneme1.styles.css" asp-append-version="true" />
+	<link href="
+https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css
+" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+	<header>
+		<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
+			<div class="container-fluid">
+				<a asp-controller="Home" asp-area="admin" asp-action="Dashboard">
+					<img src="~/images/spormudurlugu_ai2.png" class="img-fluid" style="width: 60px; margin-right:10px;" />
+				</a>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+						aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+					<ul class="navbar-nav flex-grow-1">
+						<li class="nav-item me-1">
+							<a class="btn btn-link btn-lg text-white" asp-controller="Home" asp-area="admin" asp-action="Dashboard">
+								<i class="fa-regular fa-house"></i>
+								@*Anasayfa*@
+							</a>
+						</li>
+@* 						<li class="nav-item me-2 mt-1">
+							<a class="nav-link text-white" asp-controller="Home" asp-area="admin" asp-action="Dashboard">
+								Ödemeler
+							</a>
+						</li> *@
+						<li class="nav-item me-2 mt-1">
+							<a class="nav-link text-white" asp-controller="Roles" asp-area="Admin" asp-action="Index">
+								Yetkiler / Roller
+							</a>
+						</li>
+						<li class="nav-item me-2 mt-1">
+							<a class="nav-link text-white" asp-controller="Users" asp-area="admin" asp-action="Index">
+								Kullanıcılar
+							</a>
+						</li>
+						<li class="nav-item me-2 mt-1">
+							<a class="nav-link text-white" asp-controller="Home" asp-area="Instructor" asp-action="Index">
+								<span class="bg-primary badge">Antrenör Panel</span>
+							</a>
+						</li>
+						<li class="nav-item me-2 mt-1">
+							<a class="nav-link text-white" asp-controller="Home" asp-area="Student" asp-action="Index">
+								<span class="bg-primary badge">Öğrenci Panel</span>
+							</a>
+						</li>
+					</ul>
+					<ul class="navbar-nav">
+						<li>
+							<a class="nav-link text-white" asp-controller="Settings" asp-area="admin" asp-action="Index">
+								<i class="fa fa-gear"></i>
+								Ayarlar
+							</a>
+						</li>
+						<li class="nav-item">
+							<ul class="navbar-nav">
+								@if (SignInManager.IsSignedIn(User))
+								{
+
+									var user = await UserManager.GetUserAsync(User);
+									<li class="nav-item">
+										<a class="nav-link text-white" asp-controller="Account" asp-area="" asp-action="Profile">
+											<i class="fa fa-user"></i>
+											@user.UserName
+										</a>
+									</li>
+									<li class="nav-item">
+										<form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+											<button type="submit" class="btn btn-outline-light text-white btn-sm mt-1">Çıkış</button>
+										</form>
+									</li>
+								}
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</header>
+	<div class="container">
+		<main role="main" class="pb-3 flex-fill mb-5">
+			@RenderBody()
+		</main>
+	</div>
+
+	<footer class="border-top footer text-muted text-center shadow mt-5">
+
+		<div class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-dark">
+			<!-- Copyright -->
+			<div class="text-white mb-3 mb-md-0">
+				© 2025 Uludağ Üniversitesi Spor Kulübü. Tüm Hakları Saklıdır. | Tasarım: İhsan Efe Uçar 
+			</div>
+			<!-- Copyright -->
+			<!-- Right -->
+			<div>
+				<a href="https://www.facebook.com/UludagSKS" target="_blank" class="btn btn-sm btn-dark text-white me-2">
+					<i class="fab fa-facebook-f"></i>
+				</a>
+				<a href="https://x.com/UludagSKS?lang=tr" target="_blank" class="btn btn-sm btn-dark text-white me-2">
+					<i class="fa-brands fa-x-twitter"></i>
+				</a>
+				<a href="https://www.instagram.com/uludagsks" target="_blank" class="btn btn-sm btn-dark text-white me-2">
+					<i class="fab fa-instagram"></i>
+				</a>
+				<a href="https://www.youtube.com/@@uludagsks7319" target="_blank" class="btn btn-sm btn-dark text-white me-2">
+					<i class="fab fa-youtube"></i>
+				</a>
+				<a asp-action="Privacy" asp-controller="Home" asp-area="" class="btn-link text-light text-white ms-3 ">Gizlilik Politikası</a>
+			</div>
+			<!-- Right -->
+		</div>
+
+		@*<div class="container">
+			&copy; 2025 - SporWebDeneme1 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+		</div>*@
+	</footer>
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/js/site.js" asp-append-version="true"></script>
+	@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

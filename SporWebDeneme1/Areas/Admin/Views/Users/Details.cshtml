@@ -1,0 +1,151 @@
+﻿@model SporWebDeneme1.Entities.Models.ApplicationUser
+@{
+	var allRoles = ViewBag.AllRoles as List<string>;
+	var userRoles = ViewBag.UserRoles as IList<string>;
+}
+
+<h2 class="display-4"><span class="text-danger">@Model.Email</span> Kullanıcı Detayları</h2>
+<div class="row">
+	<div class="col-md-3">
+
+		<h4>Mevcut Roller:</h4>
+		<ul>
+			@foreach (var role in userRoles)
+			{
+				<li class="mb-3">
+					@role
+					<form asp-action="RemoveRole" method="post" class="d-inline ms-3">
+						<input type="hidden" name="userId" value="@Model.Id" />
+						<input type="hidden" name="role" value="@role" />
+						<button type="submit" class="btn btn-danger btn-sm">
+							<i class="fa fa-remove"></i>
+						</button>
+					</form>
+				</li>
+			}
+		</ul>
+
+		<h4>Yeni Rol Ata:</h4>
+		<form asp-action="AssignRole" method="post">
+			<input type="hidden" name="userId" value="@Model.Id" />
+			<select name="role" class="form-control" style="width:200px; display:inline;">
+				@foreach (var role in allRoles.Except(userRoles))
+				{
+					<option value="@role">@role</option>
+				}
+			</select>
+			<button type="submit" class="btn btn-primary mb-1">Ata</button>
+		</form>
+	</div>
+
+	<div class="col-md-9 mb-5">
+		<table class="table table-hover table-striped">
+			<thead>
+				<tr>
+					<th>Özellik</th>
+					<th>Değer</th>
+				</tr>
+			</thead>
+			<tr>
+				<td>Kullanıcı Adı</td>
+				<td>@Model.UserName</td>
+			</tr>
+			<tr>
+				<td>Email</td>
+				<td>@Model.Email</td>
+			</tr>
+			<tr>
+				<td>İsim Soyisim</td>
+				<td>@($"{Model.Name} {Model.Surname}")</td>
+			</tr>
+			<tr>
+				<td>TC Kimlik No</td>
+				<td>@Model.TC_Number</td>
+			</tr>
+			<tr>
+				<td>Doğum Tarihi</td>
+				<td>@Model.BirthDate.ToString("dd/MM/yyyy")</td>
+			</tr>
+			<tr>
+				<td>Cinsiyet</td>
+				<td>@Model.Gender</td>
+			</tr>
+			<tr>
+				<td>Yaş</td>
+				<td>
+					@{
+						var today = DateOnly.FromDateTime(DateTime.Now);
+						var age = today.Year - Model.BirthDate.Year;
+					}
+					@age
+			</tr>
+			<tr>
+				<td>Roller</td>
+				<td>
+					@foreach (var role in userRoles)
+					{
+						<span class="badge bg-secondary">@role</span>
+					}
+				</td>
+			</tr>
+			<tr>
+				<td>Durum</td>
+				<td>
+					@if (Model.EmailConfirmed)
+					{
+						<div class="text-success">Onaylandı</div>
+					}
+					else
+					{
+						<div class="text-danger" ">Onaylanmadı</div>
+					}
+				</td>
+			</tr>
+			<tr>
+				<td>Kayıt Tarihi</td>
+				<td>@Model.RegistrationDate</td>
+			</tr>
+			<tr>
+				<td>Son Giriş</td>
+				<td>@Model.LastLoginDate</td>
+			</tr>
+			<tr>
+				<td>Telefon</td>
+				<td>@Model.PhoneNumber</td>
+			</tr>
+			<tr>
+				<td>Adres</td>
+				<td>
+					<address>@Model.Address</address>
+				</td>
+			</tr>
+			<tr>
+				<td>Kan Grubu</td>
+				<td>@Model.BloodType</td>
+			</tr>
+			<tr>
+				<td>Şehir</td>
+				<td>@Model.City.CityName</td>
+			</tr>
+			<tr>
+				<td>İlçe</td>
+				<td>@Model.District.DistrictName</td>
+			</tr>
+
+		</table>
+
+		@* 		<div class="text">İsim: </div>
+		<div>Soyisim: </div>
+		<div>Telefon: </div>
+		<div>Email: @Model.Email</div>
+		<div>Kayıt Tarihi:</div>
+		<div>Son Giriş: </div>
+		<div>Durum: @(Model.EmailConfirmed ? "Onaylı" : "Onaysız")</div>
+		<div>Kullanıcı Adı: @Model.UserName</div>
+		<div>Kullanıcı Adresi:</div>
+		<div>Kullanıcı Şehri:</div>
+		<div>Kullanıcı Ülke:</div>
+		<div>Kullanıcı Posta Kodu:</div> *@
+	</div>
+
+</div>

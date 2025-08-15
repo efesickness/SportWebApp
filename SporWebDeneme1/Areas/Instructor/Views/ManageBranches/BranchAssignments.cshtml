@@ -1,0 +1,56 @@
+﻿@using SporWebDeneme1.Entities.Models
+@{
+	var branchAssignments = ViewBag.BranchAssignments as List<BranchAssignment>;
+}
+
+<div class="display-2 mb-3">Branş Atamaları</div>
+<div class="mb-3">
+	<a asp-action="AssignBranchToInstructor" class="btn btn-primary">
+		<i class="fa fa-plus"></i> Branş Ata
+	</a>
+</div>
+@if (branchAssignments.Count > 0)
+{
+	<div class="row">
+		<div class="col-md-12">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Branş Adı</th>
+						<th>Öğretmen</th>
+						<th>Atanma Tarihi</th>
+						<th>İşlemler</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var assignment in branchAssignments)
+					{
+						<tr>
+							<td>@assignment.Branch.Name</td>
+							<td>@($"{assignment.ApplicationUser.Name} {assignment.ApplicationUser.Surname}")</td>
+							<td>@assignment.AssignedAt.ToString("dd/MM/yyyy")</td>
+							<td>
+								<form method="post" asp-action="RemoveBranchAssignment" class="d-inline">
+									<input type="hidden" name="assignmentId" value="@assignment.BranchAssignmentId" />
+									<button type="submit" class="btn btn-danger" title="Atamayı Sil">
+										<i class="fa fa-trash"></i>
+									</button>
+								</form>
+								<form method="get" asp-action="UpdateBranchAssignment" class="d-inline">
+									<input type="hidden" name="assignmentId" value="@assignment.BranchAssignmentId" />
+									<button type="submit" class="btn btn-secondary" title="Atamayı Düzenle">
+										<i class="fa fa-edit"></i>
+									</button>
+								</form>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+}
+else
+{
+	<div class="alert alert-info">Henüz branş ataması bulunmamaktadır.</div>
+}

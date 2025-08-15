@@ -1,0 +1,36 @@
+﻿<!--Subscription Details-->
+@model RenewSubViewModel
+@{
+	ViewData["Title"] = "Abonelik Yenileme";
+}
+<div class="display-4 mb-4">Abonelik Yenileme</div>
+<div class="card">
+	<div class="card-body">
+		<div class="row">
+			<div class="col-md-6">
+				<p><strong>İsim Soyisim:</strong> @Model.StudentSubscription.User.Name @Model.StudentSubscription.User.Surname</p>
+				<p><strong>Email:</strong> @Model.StudentSubscription.User.Email</p>
+				<p><strong>Kurs:</strong> @Model.StudentSubscription.Registration.Course.Title</p>
+				<p><strong>Abonelik Durumu:</strong> @(Model.StudentSubscription.IsActive ? "Aktif" : "Pasif")</p>
+			</div>
+			<div class="col-md-6">
+				<p><strong>Abonelik Başlangıcı:</strong> @Model.StudentSubscription.StartDate.ToShortDateString()</p>
+				<p><strong>Abonelik Bitişi:</strong> @Model.StudentSubscription.EndDate.ToShortDateString()</p>
+				<p><strong>Kalan Gün:</strong> @(Model.StudentSubscription.EndDate >= DateTime.Now ? (Model.StudentSubscription.EndDate - DateTime.Now).Days : 0)</p>
+				<p><strong>Geçen Gün:</strong> @(Model.StudentSubscription.EndDate < DateTime.Now ? (DateTime.Now - Model.StudentSubscription.EndDate).Days : 0)</p>
+			</div>
+		</div>
+	</div>
+	<div class="card-footer">
+		<form asp-action="Renew" method="post">
+			<div class="alert alert-success">(Kursun Güncel Fiyatı: @Model.Course.Price):</div>
+			<input type="hidden" asp-for="@Model.StudentSubscription.SubscriptionId" value="@Model.StudentSubscription.SubscriptionId" />
+			<div class="form-group mb-3">
+				<label for="renewalPeriod">Ödenen Tutar:</label>
+				<input asp-for="@Model.Payment.Amount" class="form-control" required min="1" />
+			</div>
+			<button type="submit" class="btn btn-primary mb-3"
+			onclick="return confirm('Bu işlem geri alınamaz. Devam etmek istediğinize emin misiniz?')">Aboneliği Yenile</button>
+		</form>
+	</div>
+</div>

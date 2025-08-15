@@ -1,0 +1,56 @@
+﻿<!--Register Course Panel-->
+@model SporWebDeneme1.Entities.Models.Course
+@{
+	ViewData["Title"] = "Kayıt Ol";
+}
+<div class="alert alert-warning container text-center lead">Bu bir ön kayıttır, ücret sonradan alınacaktır.</div>
+
+<div class="container">
+	<h2 class="mt-4">Kayıt Ol</h2>
+	<form asp-action="Register" asp-controller="ActiveCourses" asp-area="Student" method="post">
+		<div class="alert-danger" asp-validation-summary="All"></div>
+		<input type="hidden" asp-for="CourseId" />
+		<div class="form-group">
+			<label asp-for="Branch.Name">Branş</label>
+			<input type="text" class="form-control" asp-for="Branch.Name" readonly />
+		</div>
+		<div class="form-group">
+			<label asp-for="Title">Kurs Başlığı</label>
+			<input type="text" class="form-control" asp-for="Title" readonly />
+		</div>
+		<div class="form-group">
+			<label asp-for="Description">Açıklama</label>
+			<textarea class="form-control" asp-for="Description" readonly></textarea>
+		</div>
+		<div class="form-group">
+			<label>Kurs Ücreti</label>
+			<input type="text" class="form-control" value="@Model.Price.ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("tr-TR"))" readonly />
+		</div>
+		<div class="form-group">
+			<label asp-for="StartDate">Başlangıç Tarihi</label>
+			<input type="date" class="form-control" asp-for="StartDate" readonly />
+		</div>
+		<div class="form-group mb-3">
+			<label asp-for="EndDate">Bitiş Tarihi</label>
+			<input type="date" class="form-control" asp-for="EndDate" readonly />
+		</div>
+		<button type="submit" class="btn btn-primary"
+				onclick="return confirm('Ön	kaydınız gerçekleştirilecektir. Devam etmek istiyor musunuz?')">
+			Kayıt Ol
+		</button>
+	</form>
+	@if (ViewBag.ErrorMessage != null)
+	{
+		<div class="alert alert-danger mt-3">
+			@ViewBag.ErrorMessage
+		</div>
+}
+	@if (ViewBag.SuccessMessage != null)
+	{
+		<div class="alert alert-success mt-3">
+			@ViewBag.SuccessMessage
+		</div>
+}
+</div>
+<!-- End of Register Course Panel -->
+

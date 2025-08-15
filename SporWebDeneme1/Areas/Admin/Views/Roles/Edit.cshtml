@@ -1,0 +1,53 @@
+﻿@model Microsoft.AspNetCore.Identity.IdentityRole
+@{
+    ViewData["Title"] = "Rol Düzenle";
+    var permissions = ViewBag.Permissions as List<SporWebDeneme1.Entities.Models.Permission>; // namespace'i değiştir
+    var selectedPermissions = ViewBag.SelectedPermissions as List<int>;
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+    <hr />
+
+    <form asp-action="Edit" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+
+        <div class="mb-3">
+            <label for="roleName" class="form-label">Rol Adı</label>
+            <input type="text" class="form-control" id="roleName" name="roleName" value="@Model.Name" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Yetkiler</label>
+            <div class="row">
+                @if (permissions != null && permissions.Any())
+                {
+                    foreach (var permission in permissions)
+                    {
+                        var isChecked = selectedPermissions != null && selectedPermissions.Contains(permission.PermissionId);
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                       name="selectedPermissions"
+                                       value="@permission.PermissionId"
+                                       id="perm_@permission.PermissionId"
+                                       @(isChecked ? "checked" : "") />
+                                <label class="form-check-label" for="perm_@permission.PermissionId">
+                                    <strong>@permission.Name</strong>
+                                    <small class="text-muted d-block">@permission.Description</small>
+                                </label>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">Henüz tanımlı yetki yok.</p>
+                }
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Güncelle</button>
+        <a asp-action="Index" class="btn btn-secondary">İptal</a>
+    </form>
+</div>

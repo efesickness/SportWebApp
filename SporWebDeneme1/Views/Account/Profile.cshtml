@@ -1,0 +1,68 @@
+﻿@model ProfileViewModel
+@{
+	var successMessage = TempData["Success"] as string;
+	var errorMessage = TempData["Failed"] as string;
+}
+<h3 class="display-3">Admin Ayarları</h3>
+<div class="form-group mb-3">
+	<button type="button" id="changePasswordBtn" class="btn btn-secondary">Şifre Değiştir</button>
+</div>
+<form asp-action="Profile" method="post" class="my-3  lead fw-normal">
+	<input type="hidden" asp-for="Id" />
+
+	<div class="form-group mb-3">
+		<label>Ad</label>
+		<input asp-for="FirstName" class="form-control" />
+		<span asp-validation-for="FirstName" class="text-danger"></span>
+	</div>
+
+	<div class="form-group mb-3">
+		<label>Soyad</label>
+		<input asp-for="LastName" class="form-control" />
+		<span asp-validation-for="LastName" class="text-danger"></span>
+	</div>
+
+	<div class="form-group mb-3">
+		<label>E-posta</label>
+		<input asp-for="Email" class="form-control" />
+		<span asp-validation-for="Email" class="text-danger"></span>
+	</div>
+	<div class="form-group mb-3">
+		<label>Mevcut Şifreniz</label>
+		<input asp-for="CurrentPassword" class="form-control" />
+		<span asp-validation-for="CurrentPassword" class="text-danger"></span>
+	</div>
+
+	<div id="changePasswordForm" style="display:none">
+		<div class="form-group mb-3">
+			<label>Yeni Şifre</label>
+			<input asp-for="NewPassword" class="form-control" />
+			<span asp-validation-for="NewPassword" class="text-danger"></span>
+		</div>
+
+		<div class="form-group mb-3">
+			<label>Yeni Şifre (Tekrar)</label>
+			<input asp-for="ConfirmNewPassword" class="form-control" />
+			<span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
+		</div>
+	</div>
+
+	<button type="submit" class="btn btn-primary mb-2">Güncelle</button>
+
+</form>
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+	<div class="alert alert-success mt-2">@successMessage</div>
+}
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+	<div class="alert alert-danger mt-2">@errorMessage</div>
+}
+
+<script>
+	document.getElementById("changePasswordBtn").onclick = function () {
+		var form = document.getElementById("changePasswordForm");
+		form.style.display = (form.style.display === "none" || form.style.display === "") ? "block" : "none";
+	};
+</script>

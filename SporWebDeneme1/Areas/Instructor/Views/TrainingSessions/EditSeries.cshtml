@@ -1,0 +1,79 @@
+﻿@model TrainingSessionViewModel
+@{
+	ViewData["Title"] = "Edit Series";
+	var seriesId = ViewBag.SeriesId as int?;
+}
+<form asp-action="DeleteSeries">
+	<input type="hidden" name="seriesId" value="@seriesId" />
+	<button type="submit" class="btn btn-danger"
+			onclick="return confirm('Bu kaydı silerseniz ilgili diğer kayıtlar da silinecek! Bu kaydı silmek istediğinize emin misiniz?')">
+		Çoklu Antrenmanı Sil
+	</button>
+</form>
+
+<h2>Çoklu Antrenmanı Düzenle</h2>
+<form asp-action="EditSeries" method="post" class="mb-5">
+
+	<input type="hidden" asp-for="TrainingSessionId" />
+	<input type="hidden" asp-for="CourseSessionId" />
+	<input type="hidden" asp-for="UserId" />
+	<input type="hidden" name="seriesId" value="@seriesId" />
+
+	<input type="hidden" asp-for="TrainingSessionId" value="@Model.TrainingSessionId" />
+	<div class="form-group col-md-4">
+		<label>Grup Seç</label>
+		<select asp-for="CourseSessionId" class="form-control" required>
+			@foreach (var cs in Model.CourseSessions)
+			{
+				<option value="@cs.CourseSessionId">@cs.Title</option>
+			}
+		</select>
+	</div>
+
+	<div class="form-group col-md-4">
+		<label>Antrenör Seç</label>
+		<select asp-for="UserId" class="form-control" required>
+			@foreach (var instructor in Model.Instructors)
+			{
+				<option value="@instructor.Id">@instructor.Name @instructor.Surname</option>
+			}
+		</select>
+	</div>
+
+	<div class="form-group col-md-2">
+		<label>Başlangıç Saati</label>
+		<input asp-for="StartTime" type="time" class="form-control" required />
+	</div>
+
+	<div class="form-group col-md-2 mb-3">
+		<label>Bitiş Saati</label>
+		<input asp-for="EndTime" type="time" class="form-control" required />
+	</div>
+
+	<div class="form-group mb-2">
+		<label>Yardımcı Antrenörler</label><br />
+		<select class="js-example-basic-multiple" multiple="multiple" style="width:50%" asp-for="SelectedTrainingAssistants">
+			@foreach (var instructor in Model.Instructors)
+			{
+				<option value="@instructor.Id">@instructor.Name @instructor.Surname</option>
+			}
+		</select>
+	</div>
+
+	<div class="form-group">
+		<label>Görevliler</label><br />
+		<select class="js-example-basic-multiple" multiple="multiple" style="width:50%" asp-for="SelectedTrainingStaffs">
+			@foreach (var instructor in Model.Instructors)
+			{
+				<option value="@instructor.Id">@instructor.Name @instructor.Surname</option>
+			}
+		</select>
+	</div>
+
+	<div class="form-group mb-2 col-md-4">
+		<label>Not</label>
+		<textarea rows="4" asp-for="Note" class="form-control"></textarea>
+	</div>
+
+	<button type="submit" class="btn btn-success">Kaydet</button>
+</form>
