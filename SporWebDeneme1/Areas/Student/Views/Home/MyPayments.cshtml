@@ -3,7 +3,7 @@
 	ViewData["Title"] = "My Payments";
 }
 <div class="display-3 mb-3 text-success">
-	My Payments
+	Ödemelerim
 </div>
 @foreach (var course in Model.Select(p => p.StudentSubscription.Registration.Course).Distinct())
 {
@@ -46,9 +46,9 @@
 
 @if (Model.Count == 0)
 {
-	<p>No payments found.</p>
+	<p>Ödeme bulunamadı.</p>
 }
 else
 {
-	<p>Ödeme Toplamı: @Model.Sum(p => p.Amount).ToString("C")</p>
+	<p>Toplam Ödenen: @Model.Sum(p => p.Amount).ToString("C")</p>
 }

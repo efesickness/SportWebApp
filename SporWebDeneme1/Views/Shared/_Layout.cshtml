@@ -19,7 +19,7 @@
 		<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
 			<div class="container-fluid">
 				<a asp-controller="Home" asp-action="Index">
-					<img src="~/images/spormudurlugu_ai2.png" class="img-fluid" style="width: 60px; margin-right:10px;" />
+					<img src="~/images/kulup_logo.png" class="img-fluid" style="width: 60px; margin-right:10px;" />
 				</a>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
 						aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,7 @@
 								@*Anasayfa*@
 							</a>
 						</li>
-						<li class="nav-item me-1 mt-1 dropdown">
+@* 						<li class="nav-item me-1 mt-1 dropdown">
 							<a class="nav-link dropdown-toggle text-primary" asp-area="" asp-controller="Home" asp-action="Index" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 								Hizmetlerimiz / Kurslarımız
 							</a>
@@ -58,7 +58,7 @@
 							<a class="nav-link text-primary" asp-area="" asp-controller="Home" asp-action="Index">
 								Hakkımızda
 							</a>
-						</li>
+						</li> *@
 					</ul>
 					<ul class="navbar-nav">
 						<li class="nav-item">
@@ -96,11 +96,11 @@
 			</div>
 		</nav>
 	</header>
-	<div class="container">
-		<main role="main" class="pb-3 flex-fill mb-5">
+	<main role="main" class="flex-fill">
+		<div class="container">
 			@RenderBody()
-		</main>
-	</div>
+		</div>
+	</main>
 
 	<footer class="border-top footer text-muted text-center shadow mt-5">
 
@@ -128,10 +128,6 @@
 			</div>
 			<!-- Right -->
 		</div>
-
-		@*<div class="container">
-			&copy; 2025 - SporWebDeneme1 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-		</div>*@
 	</footer>
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

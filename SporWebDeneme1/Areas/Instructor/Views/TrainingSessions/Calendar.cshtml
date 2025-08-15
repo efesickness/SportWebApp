@@ -1,15 +1,89 @@
-﻿@{
-    ViewData["Title"] = "Antrenman Takvimi";
+﻿<style>
+	#calendar {
+		overflow-x: auto; /* Yatay scroll aktif */
+		-webkit-overflow-scrolling: touch; /* iOS'ta yumuşak kaydırma */
+	}
+
+		#calendar .fc-scroller {
+			overflow-x: auto !important; /* FullCalendar'ın iç scrollunu override */
+		}
+
+	.fc-daygrid-event {
+		background-color: #007bff;
+		color: white;
+		border-radius: 5px;
+		padding: 5px;
+	}
+
+		.fc-daygrid-event:hover {
+			background-color: #0056b3;
+			color: #ffffff;
+			cursor: pointer;
+		}
+
+		.fc-daygrid-event .fc-title {
+			font-weight: bold;
+		}
+
+		.fc-daygrid-event .fc-time {
+			font-size: 0.9em;
+		}
+
+		.fc-daygrid-event .fc-description {
+			font-size: 0.8em;
+			color: #666;
+		}
+
+		.fc-daygrid-event .fc-date {
+			font-size: 0.8em;
+			color: #999;
+		}
+
+		.fc-daygrid-event .fc-attendance {
+			font-size: 0.8em;
+			color: #28a745;
+		}
+
+		.fc-daygrid-event .fc-edit {
+			font-size: 0.8em;
+			color: #007bff;
+		}
+
+		.fc-daygrid-event .fc-take-attendance {
+			font-size: 0.8em;
+			color: #dc3545;
+		}
+
+			.fc-daygrid-event .fc-edit:hover,
+			.fc-daygrid-event .fc-take-attendance:hover {
+				text-decoration: underline;
+				cursor: pointer;
+			}
+
+			.fc-daygrid-event .fc-edit:active,
+			.fc-daygrid-event .fc-take-attendance:active {
+				color: #0056b3;
+			}
+
+			.fc-daygrid-event .fc-edit:focus,
+			.fc-daygrid-event .fc-take-attendance:focus {
+				outline: none;
+				box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
+			}
+</style>
+
+@{
+	ViewData["Title"] = "Antrenman Takvimi";
 	var successMessage = TempData["SuccessMessage"] as string;
 	var errorMessage = TempData["ErrorMessage"] as string;
 }
-@if(successMessage != null)
+@if (successMessage != null)
 {
 	<div class="alert alert-success">
 		@successMessage
 	</div>
 }
-@if(errorMessage != null)
+@if (errorMessage != null)
 {
 	<div class="alert alert-danger">
 		@errorMessage
@@ -18,7 +92,12 @@
 
 <a class="btn btn-primary mb-3" asp-action="Create" asp-controller="TrainingSessions" asp-area="Instructor">Antrenman Oluştur</a>
 <h2 class="display-4">Antrenman Takvimi</h2>
-<div id="calendar" class="mb-5"></div>
+<div style="overflow-x:auto;">
+	<div id="calendar">
+
+		<div id="calendar" class="mb-5"></div>
+	</div>
+</div>
 <div class="modal fade" id="eventDetailsModal" tabindex="-1" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -42,50 +121,50 @@
 </div>
 
 
-	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			var calendarEl = document.getElementById('calendar');
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		var calendarEl = document.getElementById('calendar');
 
-			var calendar = new FullCalendar.Calendar(calendarEl, {
+		var calendar = new FullCalendar.Calendar(calendarEl, {
+			initialView: 'dayGridMonth',
+			locale: 'tr',
+		events: '/Instructor/TrainingSessions/GetEvents',
+			eventClick: function(info) {
+				alert("Grup: "+info.event.title + "\n" +
+				"Açıklama: " + info.event.extendedProps.description + "\n" +
+				"Tarih: " + info.event.extendedProps.date+ "\n"+
+				"Başlangıç: " + info.event.extendedProps.startTime + "\n" +
+				"Bitiş: " + info.event.extendedProps.endTime);
+			}
+		});
+
+		calendar.render();
+	});
+					document.addEventListener('DOMContentLoaded', function() {
+			  var calendarEl = document.getElementById('calendar');
+			  var eventModal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
+
+			  var calendar = new FullCalendar.Calendar(calendarEl, {
 				initialView: 'dayGridMonth',
 				locale: 'tr',
-			events: '/Instructor/TrainingSessions/GetEvents',
-				eventClick: function(info) {
-					alert("Grup: "+info.event.title + "\n" +
-					"Açıklama: " + info.event.extendedProps.description + "\n" +
-					"Tarih: " + info.event.extendedProps.date+ "\n"+
-					"Başlangıç: " + info.event.extendedProps.startTime + "\n" +
-					"Bitiş: " + info.event.extendedProps.endTime);
+				events: '/Instructor/TrainingSessions/GetEvents',
+			eventClick: function(info) {
+				  document.getElementById('eventTitle').textContent = info.event.title;
+				  document.getElementById('eventDescription').textContent = info.event.extendedProps.description;
+				  document.getElementById('eventStartTime').textContent = info.event.extendedProps.startTime;
+				  document.getElementById('eventEndTime').textContent = info.event.extendedProps.endTime;
+				  document.getElementById('eventDate').textContent = info.event.extendedProps.date;
+
+				  var editUrl = '/Instructor/TrainingSessions/Edit?id=' + info.event.id;
+				  document.getElementById('editLink').href = editUrl;
+
+				  var attendanceUrl = '/Instructor/TrainingSessions/TakeAttendance?trainingId=' + info.event.id;
+				  document.getElementById('takeAttendance').href = attendanceUrl;
+
+				  eventModal.show();
 				}
+			  });
+
+			  calendar.render();
 			});
-
-			calendar.render();
-		});
-						document.addEventListener('DOMContentLoaded', function() {
-				  var calendarEl = document.getElementById('calendar');
-				  var eventModal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
-
-				  var calendar = new FullCalendar.Calendar(calendarEl, {
-					initialView: 'dayGridMonth',
-					locale: 'tr',
-					events: '/Instructor/TrainingSessions/GetEvents',
-				eventClick: function(info) {
-					  document.getElementById('eventTitle').textContent = info.event.title;
-					  document.getElementById('eventDescription').textContent = info.event.extendedProps.description;
-					  document.getElementById('eventStartTime').textContent = info.event.extendedProps.startTime;
-					  document.getElementById('eventEndTime').textContent = info.event.extendedProps.endTime;
-					  document.getElementById('eventDate').textContent = info.event.extendedProps.date;
-
-					  var editUrl = '/Instructor/TrainingSessions/Edit?id=' + info.event.id;
-					  document.getElementById('editLink').href = editUrl;
-
-					  var attendanceUrl = '/Instructor/TrainingSessions/TakeAttendance?trainingId=' + info.event.id;
-					  document.getElementById('takeAttendance').href = attendanceUrl;
-
-					  eventModal.show();
-					}
-				  });
-
-				  calendar.render();
-				});
-	</script>
+</script>

@@ -20,10 +20,10 @@ namespace SporWebDeneme1.Areas.Instructor.Controllers
             _userManager = userManager;
         }
 
-        //dashboard
+
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("PendingRegistrations");
         }
 
         [Authorize(Policy = "CanAccessPendingRegistration")]
@@ -74,7 +74,7 @@ namespace SporWebDeneme1.Areas.Instructor.Controllers
             return RedirectToAction("PendingRegistrations");
         }
 
-        [Authorize(Roles = "CanAccessMyStudentsPanel")]
+        [Authorize(Policy = "CanAccessMyStudentsPanel")]
         public async Task<IActionResult> Students()
         {
             var instructorId = _userManager.GetUserId(User);
