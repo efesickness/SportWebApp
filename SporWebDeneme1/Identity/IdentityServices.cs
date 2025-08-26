@@ -19,8 +19,8 @@ namespace SporWebDeneme1.Identity
                     await roleManager.CreateAsync(new IdentityRole(roleName));
             }
 
-            var adminEmail = "iefeucar@hotmail.com";
-            var adminPassword = "Admin123!"; // Karmaşık ve geçerli bir şifre olmalı
+            var adminEmail = "msarslan@uludag.edu.tr";
+            var adminPassword = "TempAdminPassword123!";
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
             if (adminUser == null)
             {
@@ -31,8 +31,8 @@ namespace SporWebDeneme1.Identity
                     EmailConfirmed = true,
                     Address = "Admin Address",
                     PhoneNumber = "1234567890",
-                    Name = "Efe",
-                    Surname = "Uçar",
+                    Name = "Admin",
+                    Surname = "Admin",
                     TC_Number = "12345678901",
                     LastLoginDate = DateTime.Now,
                     BirthDate = new DateOnly(1990, 1, 1),
