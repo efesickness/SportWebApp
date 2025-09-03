@@ -51,7 +51,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.SignIn.RequireConfirmedEmail = true;
 });
 
-builder.Services.AddAuthorization(options => 
+builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("CanDeleteStudent", policy =>
         policy.Requirements.Add(new PermissionRequirement("CanDeleteStudent")));
@@ -148,7 +148,7 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("CanAccessStudentPanel", policy =>
     policy.Requirements.Add(new PermissionRequirement("CanAccessStudentPanel")));
-    
+
     options.AddPolicy("CanTakeTrainingAttendance", policy =>
     policy.Requirements.Add(new PermissionRequirement("CanTakeTrainingAttendance")));
 });
@@ -178,6 +178,10 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     await IdentityServices.SeedRolesAsync(services);
+
+    services = scope.ServiceProvider;
+    await DataSeeder.SeedPermissionsAndAdminAsync(services);
+
 }
 
 
