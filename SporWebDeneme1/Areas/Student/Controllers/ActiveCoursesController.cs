@@ -65,7 +65,7 @@ namespace SporWebDeneme1.Areas.Student.Controllers
             var studentSubscriptions = new StudentSubscription
             {
                 StartDate = DateTime.Now,
-                EndDate = DateTime.Now.AddMonths(1),
+                EndDate = DateTime.Now.AddMonths(1).AddDays(1),
                 UserId = userId,
                 RegistrationId = registration.RegistrationId
             };

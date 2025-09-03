@@ -47,17 +47,7 @@ namespace SporWebDeneme1.Areas.Instructor.Controllers
 
             CourseSessionViewModel session = new CourseSessionViewModel
             {
-                CourseId = courseId,
-                Days = Enum.GetValues(typeof(DayOfWeek))
-                    .Cast<DayOfWeek>()
-                    .Select(day => new DaySelectionViewModel
-                    {
-                        Day = day,
-                        IsSelected = false,
-                        StartTime = null,
-                        EndTime = null
-                    })
-                    .ToList()
+                CourseId = courseId
             };
 
             ViewBag.Courses = await _context.Courses.Where(x => x.IsActive == true).ToListAsync();
@@ -73,7 +63,7 @@ namespace SporWebDeneme1.Areas.Instructor.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "CanAddEditAndDeleteCourseSession")]
-        public async Task<IActionResult> Create(CourseSessionViewModel session, List<int> SelectedDays)
+        public async Task<IActionResult> Create(CourseSessionViewModel session)
         {
 
             var course = await _context.Courses.FindAsync(session.CourseId);
@@ -91,15 +81,7 @@ namespace SporWebDeneme1.Areas.Instructor.Controllers
                     AvailableCapacity = session.AvailableCapacity,
                     IsActive = session.IsActive,
                 };
-                foreach (var day in session.Days.Where(d => d.IsSelected))
-                {
-                    model.CourseSessionDays.Add(new CourseSessionDay
-                    {
-                        DayOfWeek = day.Day,
-                        StartTime = day.StartTime.Value,
-                        EndTime = day.EndTime.Value
-                    });
-                }
+                
                 _context.CourseSessions.Add(model);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index), "CourseSession", new { courseId = session.CourseId });
@@ -129,7 +111,6 @@ namespace SporWebDeneme1.Areas.Instructor.Controllers
             ViewBag.CourseId = courseId;
 
             var session = await _context.CourseSessions
-                .Include(cs => cs.CourseSessionDays) // gün saat ilişkisi varsa buradan çek
                 .FirstOrDefaultAsync(cs => cs.CourseSessionId == id);
 
             if (session == null) return NotFound();
@@ -142,17 +123,7 @@ namespace SporWebDeneme1.Areas.Instructor.Controllers
                 AvailableCapacity = session.AvailableCapacity,
                 IsActive = session.IsActive,
                 Title = session.Title,
-                Description = session.Description,
-                Days = Enum.GetValues(typeof(DayOfWeek))
-                    .Cast<DayOfWeek>()
-                    .Select(day => new DaySelectionViewModel
-                    {
-                        Day = day,
-                        IsSelected = session.CourseSessionDays.Any(d => d.DayOfWeek == day),
-                        StartTime = session.CourseSessionDays.FirstOrDefault(d => d.DayOfWeek == day)?.StartTime,
-                        EndTime = session.CourseSessionDays.FirstOrDefault(d => d.DayOfWeek == day)?.EndTime
-                    })
-                    .ToList()
+                Description = session.Description
             };
 
             ViewBag.Courses = await _context.Courses.ToListAsync();
@@ -175,12 +146,10 @@ namespace SporWebDeneme1.Areas.Instructor.Controllers
             if (ModelState.IsValid)
             {
                 var existingSession = await _context.CourseSessions
-                    .Include(cs => cs.CourseSessionDays)
                     .FirstOrDefaultAsync(cs => cs.CourseSessionId == model.CourseSessionId);
 
                 if (existingSession == null) return NotFound();
 
-                // Ana bilgileri güncelle
                 existingSession.CourseId = model.CourseId;
                 existingSession.UserId = model.UserId;
                 existingSession.AvailableCapacity = model.AvailableCapacity;
@@ -188,17 +157,6 @@ namespace SporWebDeneme1.Areas.Instructor.Controllers
                 existingSession.Title = model.Title;
                 existingSession.Description = model.Description;
 
-                // Gün-saatleri güncelle
-                existingSession.CourseSessionDays.Clear();
-                foreach (var day in model.Days.Where(d => d.IsSelected))
-                {
-                    existingSession.CourseSessionDays.Add(new CourseSessionDay
-                    {
-                        DayOfWeek = day.Day,
-                        StartTime = day.StartTime,
-                        EndTime = day.EndTime
-                    });
-                }
 
                 _context.CourseSessions.Update(existingSession);
                 await _context.SaveChangesAsync();
@@ -324,7 +282,6 @@ namespace SporWebDeneme1.Areas.Instructor.Controllers
         {
             var session = await _context.CourseSessions
                 .Include(s => s.Course)
-                .Include(s => s.CourseSessionDays)
                 .Include(s => s.Registrations)
                 .ThenInclude(r => r.ApplicationUser)
                 .FirstOrDefaultAsync(s => s.CourseSessionId == id);

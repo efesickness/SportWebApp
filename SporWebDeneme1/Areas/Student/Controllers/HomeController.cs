@@ -48,7 +48,7 @@ namespace SporWebDeneme1.Areas.Student.Controllers
                 .FirstOrDefaultAsync();
 
             var registration = await _context.Registrations
-                .Where(r => r.UserId == user.Id && r.CourseSessionId == courseSessionId)
+                .Where(r => r.UserId == user.Id && r.CourseId == courseId)
                 .FirstOrDefaultAsync();
 
             var sub = await _context.StudentSubscriptions
@@ -60,15 +60,19 @@ namespace SporWebDeneme1.Areas.Student.Controllers
                     .OrderByDescending(p => p.PaymentDate)
                     .FirstOrDefaultAsync();
 
+            var session = await _context.CourseSessions
+                .Include(x=>x.ApplicationUser)
+                .FirstOrDefaultAsync(x => x.CourseSessionId == courseSessionId);
+
             CourseDetailsViewModel courseDetails = new CourseDetailsViewModel()
             {
                 branch = course.Branch.Name,
                 courseName = course.Title,
                 courseDescription = course.Description,
-                instructor = $"{course.ApplicationUser.Name} {course.ApplicationUser.Surname}",
+                instructor = courseSessionId != 0 ? $"{session.ApplicationUser.Name} {session.ApplicationUser.Surname}" : "ATANMADI",
                 lastPayment = payment.PaymentDate,
                 nextPayment = payment.PaymentDate.AddMonths(1),
-                courseSession = course.CourseSessions.Where(x => x.CourseSessionId == courseSessionId).Select(x => x.Title).FirstOrDefault(),
+                courseSession = course.CourseSessions.Where(x => x.CourseSessionId == courseSessionId).Select(x => x.Title).FirstOrDefault() ?? "ATANMADI",
                 lastPaymentAmount = payment.Amount,
             }
             ;

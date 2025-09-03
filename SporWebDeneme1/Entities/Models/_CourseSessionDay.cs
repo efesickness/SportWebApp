@@ -2,7 +2,7 @@
 
 namespace SporWebDeneme1.Entities.Models
 {
-    public class CourseSessionDay
+    public class _CourseSessionDay
     {
         public int Id { get; set; }
 

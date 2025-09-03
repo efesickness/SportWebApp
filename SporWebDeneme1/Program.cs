@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using SporWebDeneme1.Email;
 using SporWebDeneme1.Entities;
 using SporWebDeneme1.Entities.Models;
@@ -50,10 +51,13 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.SignIn.RequireConfirmedEmail = true;
 });
 
-builder.Services.AddAuthorization(options =>
+builder.Services.AddAuthorization(options => 
 {
     options.AddPolicy("CanDeleteStudent", policy =>
-        policy.Requirements.Add(new PermissionRequirement("CanDeleteStudentFromCourseSession")));
+        policy.Requirements.Add(new PermissionRequirement("CanDeleteStudent")));
+
+    options.AddPolicy("CanDeleteStudentFromCourseSession", policy =>
+    policy.Requirements.Add(new PermissionRequirement("CanDeleteStudentFromCourseSession")));
 
     options.AddPolicy("CanAddAndDeletePermission", policy =>
     policy.Requirements.Add(new PermissionRequirement("CanAddAndDeletePermission")));
@@ -161,8 +165,7 @@ var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+    //error handling section
 }
 else
 {

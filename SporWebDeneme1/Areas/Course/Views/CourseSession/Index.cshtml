@@ -77,14 +77,6 @@
 							<i class="fa fa-user-plus"></i>
 						</button>
 					</form>
-					<form method="get" asp-action="Take" asp-controller="Attendance" asp-area="Instructor" class="d-inline">
-						<input type="hidden" value="@item.CourseSessionId" name="sessionId" id="sessionId" />
-						<button class="btn btn-secondary" type="submit"
-								@(Model.First().Course.IsActive ? "" : "disabled")
-								data-bs-toggle="tooltip" title="Yoklama al">
-							<i class="fa fa-check"></i>
-						</button>
-					</form>
 				</td>
 			</tr>
 		}

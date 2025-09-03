@@ -28,7 +28,6 @@ namespace SporWebDeneme1.Entities
         public DbSet<TrainingStaff> TrainingStaffs { get; set; }
         public DbSet<TrainingSessionSeries> TrainingSessionSeries { get; set; }
         public DbSet<TrainingSessionSeriesDay> TrainingSessionSeriesDays { get; set; }
-        public DbSet<CourseSessionDay> CourseSessionDays { get; set; }
         public DbSet<TrainingAttendance> TrainingAttendances { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }

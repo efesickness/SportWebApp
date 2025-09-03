@@ -19,7 +19,6 @@ namespace SporWebDeneme1.Entities.Models
         public virtual Course Course { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
         public virtual ICollection<Registration> Registrations { get; set; } = new List<Registration>();
-        public virtual ICollection<CourseSessionDay> CourseSessionDays { get; set; } = new List<CourseSessionDay>();
 
     }
 }
