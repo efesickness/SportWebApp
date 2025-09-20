@@ -9,7 +9,6 @@ namespace SporWebDeneme1.Entities.Models
         [ForeignKey("IdentityRole")]
         public string RoleId { get; set; }
         public virtual IdentityRole IdentityRole { get; set; }
-        [ForeignKey("Permission")]
         public int PermissionId { get; set; }
         public virtual Permission Permission { get; set; }
     }

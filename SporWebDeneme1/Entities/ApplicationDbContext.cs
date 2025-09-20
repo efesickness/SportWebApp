@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SporWebDeneme1.Entities.Models;
 using System.Reflection.Emit;
 
@@ -60,6 +62,118 @@ namespace SporWebDeneme1.Entities
                 .HasOne(rp => rp.Permission)
                 .WithMany(p => p.RolePermissions)
                 .HasForeignKey(rp => rp.PermissionId);
+
+
+            var dateOnlyConverter = new ValueConverter<DateOnly, DateTime>(
+                d => d.ToDateTime(TimeOnly.MinValue),    
+                d => DateOnly.FromDateTime(d));        
+
+            modelBuilder.Entity<ApplicationUser>()
+                .Property(u => u.BirthDate)
+                .HasConversion(dateOnlyConverter);
+
+            modelBuilder.Entity<SiteSettings>()
+                .Property(s => s.DefaultCoursePrice)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Course>()
+                .Property(c => c.Price)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Payment>()
+                .Property(p => p.Amount)
+                .HasColumnType("decimal(18,2)");
+
+
+            modelBuilder.Entity<IdentityRoleClaim<string>>()
+                .HasOne<IdentityRole>()
+                .WithMany()
+                .HasForeignKey(rc => rc.RoleId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<District>()
+                .HasOne(d => d.City)
+                .WithMany(c => c.Districts)
+                .HasForeignKey(d => d.CityId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasOne(u => u.City)
+                .WithMany()
+                .HasForeignKey(u => u.CityId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasOne(u => u.District)
+                .WithMany()
+                .HasForeignKey(u => u.DistrictId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<RolePermission>()
+                .HasOne(rp => rp.IdentityRole)
+                .WithMany()
+                .HasForeignKey(rp => rp.RoleId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<RolePermission>()
+                .HasOne(rp => rp.Permission)
+                .WithMany(p=>p.RolePermissions)
+                .HasForeignKey(rp => rp.PermissionId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<CourseSession>()
+                .HasOne(cs => cs.Course)
+                .WithMany(c => c.CourseSessions)
+                .HasForeignKey(cs => cs.CourseId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Registration>()
+                .HasOne(r => r.ApplicationUser)
+                .WithMany()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Registration>()
+                .HasOne(r => r.Course)
+                .WithMany()
+                .HasForeignKey(r => r.CourseId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Registration>()
+                .HasOne(r => r.CourseSession)
+                .WithMany(cs => cs.Registrations)
+                .HasForeignKey(r => r.CourseSessionId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TrainingSessionSeries>()
+                .HasOne(ts => ts.ApplicationUser)
+                .WithMany()
+                .HasForeignKey(ts => ts.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TrainingSessionSeries>()
+                .HasOne(ts => ts.CourseSession)
+                .WithMany()
+                .HasForeignKey(ts => ts.CourseSessionId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TrainingSession>()
+                .HasOne(ts => ts.ApplicationUser)
+                .WithMany()
+                .HasForeignKey(ts => ts.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TrainingSession>()
+                .HasOne(ts => ts.CourseSession)
+                .WithMany()
+                .HasForeignKey(ts => ts.CourseSessionId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Payment>()
+                .HasOne(p => p.StudentSubscription)
+                .WithMany()
+                .HasForeignKey(p => p.SubscriptionId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
