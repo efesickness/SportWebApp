@@ -16,7 +16,7 @@ B.U.Ü Spor Müdürlüğü ve Spor Kulübü adına geliştirilmiştir.
 - ASP.Net Identity
 ## Kurulum
 ```bash
-# Repoyu klona
+# Repoyu klonla
 git clone https://github.com/efesickness/SportWebApp.git
 
 # Proje dizinine gir
